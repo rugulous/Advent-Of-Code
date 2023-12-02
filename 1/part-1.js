@@ -1,8 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-
-const input = fs.readFileSync(path.join(__dirname, "input.txt"), "utf-8");
-const lines = input.split("\n");
+const {getPuzzleInput} = require("../utils");
 
 function tryParseInt(char){
     if(isNaN(parseInt(char))){
@@ -36,6 +32,7 @@ function extractNumbers(line){
     return parseInt(firstNum + lastNum);
 }
 
+const lines = getPuzzleInput(__dirname);
 const total = lines.reduce((acc, line) => {
     return acc + extractNumbers(line);
 }, 0);
