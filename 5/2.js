@@ -13,12 +13,13 @@ function expandSeeds(line){
     const segments = line.split(":")[1].trim().split(" ").map(s => parseInt(s));
 
     for(let i = 0; i < segments.length; i += 2){
-        for(let s = segments[i]; s < segments[i] + segments[i + 1]; s++){
-            seeds.push(s);
-        }
+        seeds.push({
+            start: segments[i],
+            end: segments[i] + segments[i + 1]
+        });
     }
 
-    return seeds;
+    return seeds.sort((a,b) => a.start - b.start);
 }
 
 function processNewMap(line) {
@@ -100,12 +101,26 @@ function getSeedAtLocation(location){
     }
 
     console.log(`Final value: ${index}`);
-    if(seeds.includes(index)){
+    if(matchesSeed(index)){
         console.log(`${index} is a seed!`);
         return location;
     }
 
     return null;
+}
+
+function matchesSeed(num){
+    for(const seed of seeds){
+        if(seed.start > num){
+            return false;
+        }
+
+        if(seed.start < num && seed.end > num){
+            return true;
+        }
+    }
+
+    return false;
 }
 
 const input = getPuzzleInput(__dirname, "example.txt");
@@ -115,10 +130,9 @@ processNewMap(""); //make sure we sort the final map too!
 
 const seeds = expandSeeds(input[0]);
 
-const locations = [];
 for(let i = 0; i < maxSize; i++){
-    locations.push(getSeedAtLocation(i));
+    if(getSeedAtLocation(i) != null){
+        console.log(`Lowest location: ${i}`);
+        break;
+    }
 }
-
-console.log(`Finished for max size of ${maxSize}`);
-console.log(Math.min(...locations.filter(x => x)));
