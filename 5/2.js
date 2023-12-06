@@ -8,6 +8,12 @@ const order = ['seed', 'soil', 'fertilizer', 'water', 'light', 'temperature', 'h
 const sortedKeys = {};
 let maxSize = -1;
 
+//removing all but essential logging speeds this up dramatically!
+const _log = console.log;
+console = {
+    log: () => {}
+}
+
 function expandSeeds(line){
     const seeds = [];
     const segments = line.split(":")[1].trim().split(" ").map(s => parseInt(s));
@@ -123,7 +129,7 @@ function matchesSeed(num){
     return false;
 }
 
-const input = getPuzzleInput(__dirname, "example.txt");
+const input = getPuzzleInput(__dirname); //, "example.txt");
 
 input.slice(1).forEach(processLine);
 processNewMap(""); //make sure we sort the final map too!
@@ -132,7 +138,7 @@ const seeds = expandSeeds(input[0]);
 
 for(let i = 0; i < maxSize; i++){
     if(getSeedAtLocation(i) != null){
-        console.log(`Lowest location: ${i}`);
+        _log(`Lowest location: ${i}`);
         break;
     }
 }
