@@ -36,7 +36,7 @@ function getMultiples(target, limit){
     return multiples;
 }
 
-const input = getPuzzleInput(__dirname, "example.txt");
+const input = getPuzzleInput(__dirname);
 const races = translateInput();
 
 const result = races.reduce((acc, r) => acc * getMultiples(r.distance, r.time), 1);
