@@ -14,7 +14,23 @@ function getScoreForMatches([matches, numJokers]){
     const keys = Object.keys(matches);
 
     if(keys.length == 0){
-        return 1; //high card
+        if(numJokers == 0){
+            return 1; //high card
+        }
+
+        if(numJokers == 1){
+            return 2; //1 pair
+        }
+
+        if(numJokers == 2){
+            return 4; //3 of a kind
+        }
+
+        if(numJokers == 3){
+            return 6; //4 of a kind
+        }
+
+        return 7; //5 of a kind
     }
 
     if(keys.length == 1){
@@ -36,8 +52,9 @@ function getScoreForMatches([matches, numJokers]){
 
     const match1 = matches[keys[0]];
     const match2 = matches[keys[1]];
+    const highest = Math.max(match1, match2)
 
-    if(match1 == 3 || match2 == 3){
+    if(highest == 3){
         if(numJokers >= 2){
             return 7; //5 of a kind - 3 cards + 2 jokers
         }
@@ -47,6 +64,10 @@ function getScoreForMatches([matches, numJokers]){
         }
 
         return 5; //full house
+    }
+
+    if(numJokers >= 1){
+        return 5; //full house - (2 cards + joker) + 2 cards
     }
 
     return 3; //2 pair
@@ -92,17 +113,26 @@ function parseInput(line){
 
 function rankHands(hands){
     hands.forEach(hand => {
-        console.log(`Parsing hand ${hand.hand}...`);
+        if(hand.hand.indexOf('J') >= 0){
+            console.log(`Parsing hand ${hand.hand}...`);
+        }
 
         const matches = getMatches(hand.hand);
-        console.log(matches);
+        if(hand.hand.indexOf('J') >= 0){
+            console.log(matches);
+        }
 
         const score = getScoreForMatches(matches);
-        console.log(`Calculated score: ${score}`);
+        if(hand.hand.indexOf('J') >= 0){
+            console.log(`Calculated score: ${score}`);
+        }
 
         hand.score = score;
-        console.log("-----");
-        console.log();
+
+        if(hand.hand.indexOf('J') >= 0){
+            console.log("-----");
+            console.log();
+        }
     });
 
     hands.sort((a,b) => {
@@ -123,8 +153,12 @@ function rankHands(hands){
     return hands;
 }
 
-const input = getPuzzleInput(__dirname, "example.txt").map(parseInput);
+const input = getPuzzleInput(__dirname).map(parseInput);
 const hands = rankHands(input);
-console.log(hands);
+
+for(let i = 0; i < hands.length; i++){
+    console.log(hands[i]);
+}
+
 const winnings = hands.reduce((acc, val, index) => acc + (val.bid * (index + 1)), 0);
 console.log(winnings);
