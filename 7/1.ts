@@ -1,8 +1,9 @@
-const {getPuzzleInput} = require("../utils");
+import { getPuzzleInput } from "../utils";
+import { IHand } from "./type";
 
 const cardOrder = ['2','3','4','5','6','7','8','9','T','J','Q','K','A'];
 
-function getScoreForMatches(matches){
+function getScoreForMatches(matches: object){
     //5 of a kind = 7
     //4 of a kind = 6
     //full house = 5
@@ -44,7 +45,7 @@ function getScoreForMatches(matches){
     return 3; //2 pair
 }
 
-function getMatches(hand){
+function getMatches(hand: string){
     const matches = {};
 
     for(let i = 0; i < hand.length; i++){
@@ -67,7 +68,7 @@ function getMatches(hand){
     return matches;
 }
 
-function parseInput(line){
+function parseInput(line: string): IHand{
     const data = line.split(" ");
     return {
         hand: data[0],
@@ -76,7 +77,7 @@ function parseInput(line){
     };
 }
 
-function rankHands(hands){
+function rankHands(hands: IHand[]){
     hands.forEach(hand => {
         console.log(`Parsing hand ${hand.hand}...`);
 

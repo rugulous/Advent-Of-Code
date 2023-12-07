@@ -1,10 +1,10 @@
-const { getPuzzleInput } = require("../utils");
+import {getPuzzleInput} from "../utils";
 
-function isNumeric(char){
+function isNumeric(char: string){
     return !isNaN(parseInt(char));
 }
 
-function parseLine(line, lineIndex){
+function parseLine(line: string, lineIndex: number){
     console.log(`Parsing line ${lineIndex}...`);
     console.log(line);
     console.log();
@@ -45,7 +45,7 @@ function parseLine(line, lineIndex){
     return lineTotal;
 }
 
-function checkAdjacent(xPos, yPos){
+function checkAdjacent(xPos: number, yPos: number){
     const minX = Math.max(0, xPos - 1);
     const maxX = Math.min(input[0].length - 1, xPos + 1);
     const minY = Math.max(0, yPos - 1);
@@ -71,5 +71,3 @@ const input = getPuzzleInput(__dirname);
 let total = 0
 input.forEach((line, index) => total += parseLine(line, index));
 console.log(total);
-
-//parseLine(input[17], 17);

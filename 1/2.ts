@@ -1,6 +1,6 @@
-const {getPuzzleInput} = require("../utils");
+import {getPuzzleInput} from "../utils";
 
-const validChars = {
+const validChars: {[key: string]: string} = {
     one: "1",
     two: "2",
     three: "3",
@@ -10,11 +10,11 @@ const validChars = {
     seven: "7",
     eight: "8",
     nine: "9"
-}
+};
 
 const words = Object.keys(validChars);
 
-function tryParseInt(char){
+function tryParseInt(char: string): string | null{
     if(isNaN(parseInt(char))){
         return null;
     }
@@ -37,9 +37,9 @@ function checkBuffer(){
     return null;
 }
 
-function extractNumbers(line){
-    let firstNum = null;
-    let lastNum = null;
+function extractNumbers(line: string){
+    let firstNum: string | null = null;
+    let lastNum: string | null = null;
     buffer = "";
 
     for(const char of line){
@@ -60,6 +60,10 @@ function extractNumbers(line){
         } else {
             lastNum = val;
         }
+    }
+
+    if(!firstNum){
+        return 0;
     }
 
     if(!lastNum){

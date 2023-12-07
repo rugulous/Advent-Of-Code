@@ -1,7 +1,7 @@
-const { getPuzzleInput } = require("../utils");
+import {getPuzzleInput} from "../utils";
 
-function extractNumbers(line){
-    const nums = [];
+function extractNumbers(line: string){
+    const nums: number[] = [];
     const strings = line.split(" ");
     for(const string of strings){
         const result = parseInt(string);
@@ -13,10 +13,10 @@ function extractNumbers(line){
     return nums;
 }
 
-function parseLine(line){
-    let [winning, yours] = line.split(":")[1].split("|");
-    winning = extractNumbers(winning);
-    yours = extractNumbers(yours);
+function parseLine(line: string){
+    const parts = line.split(":")[1].split("|");
+    const winning = extractNumbers(parts[0]);
+    const yours = extractNumbers(parts[1]);
 
     let matches = 0;
 
@@ -33,5 +33,5 @@ function parseLine(line){
     return Math.pow(2, matches - 1);
 }
 
-const total = getPuzzleInput(__dirname).reduce((acc, val) => acc += parseLine(val), 0);
+const total = getPuzzleInput(__dirname).reduce((acc, val) => acc + parseLine(val), 0);
 console.log(total);

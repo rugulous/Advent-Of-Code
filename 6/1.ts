@@ -1,13 +1,14 @@
-const {getPuzzleInput} = require("../utils");
+import { getPuzzleInput } from "../utils";
+import { IRace } from "./type";
 
-function extractNumbers(line){
+function extractNumbers(line: string){
     return line.split(":")[1].trim().split(" ").filter(c => c.trim().length > 0).map(n => parseInt(n)); //cheeky multi-space splitting!
 }
 
 function translateInput(){
     const time = extractNumbers(input[0])
     const distance = extractNumbers(input[1]);
-    const races = [];
+    const races: IRace[] = [];
     
     for(let i = 0; i < time.length; i++){
         races.push({
@@ -19,7 +20,7 @@ function translateInput(){
     return races;
 }
 
-function getMultiples(target, limit){
+function getMultiples(target: number, limit: number){
     let multiples = 0;
 
     for(let i = 1; i < limit; i++){

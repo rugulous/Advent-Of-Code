@@ -1,14 +1,17 @@
-const { getPuzzleInput } = require("../utils");
+import {getPuzzleInput} from "../utils";
+import { IRgb } from "./type";
 
-const limits = {
+const colours = ["red","green","blue"];
+
+const limits: IRgb = {
     red: 12,
     green: 13,
     blue: 14
 };
 
-function parseReveal(reveal) {
+function parseReveal(reveal: string): IRgb {
     const parts = reveal.split(",");
-    const parsed = {
+    const parsed: IRgb = {
         red: 0,
         green: 0,
         blue: 0
@@ -23,11 +26,11 @@ function parseReveal(reveal) {
     return parsed;
 }
 
-function parseInput(line) {
+function parseInput(line: string) {
     const [idString, data] = line.split(":");
     const id = parseInt(idString.split(" ")[1]);
 
-    const maxGuess = {
+    const maxGuess: IRgb = {
         red: 0,
         green: 0,
         blue: 0
@@ -45,9 +48,9 @@ function parseInput(line) {
     };
 }
 
-function getInputValue(line){
+function getInputValue(line: string){
     const parsedInput = parseInput(line);
-    for(const k of Object.keys(parsedInput.maxGuess)){
+    for(const k of colours){
         if(parsedInput.maxGuess[k] > limits[k]){
             return 0;
         }

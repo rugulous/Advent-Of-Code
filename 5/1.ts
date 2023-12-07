@@ -1,43 +1,27 @@
-const { getPuzzleInput } = require("../utils");
+import {getPuzzleInput} from "../utils";
 
-let currMap = null;
-let allMap = {};
+let currMap: string | null = null;
+let allMap: {[key: string]: {[key: string]: number[]}} = {};
 
-const order = ['seed', 'soil', 'fertilizer', 'water', 'light', 'temperature', 'humidity'].reverse();
+const order = ['seed', 'soil', 'fertilizer', 'water', 'light', 'temperature', 'humidity'];
 
-const sortedKeys = {};
-let maxSize = -1;
+const sortedKeys: {[key: string]: number[]} = {};
 
-//removing all but essential logging speeds this up dramatically!
-const _log = console.log;
-console = {
-    log: () => {}
-}
-
-function expandSeeds(line){
-    const seeds = [];
-    const segments = line.split(":")[1].trim().split(" ").map(s => parseInt(s));
-
-    for(let i = 0; i < segments.length; i += 2){
-        seeds.push({
-            start: segments[i],
-            end: segments[i] + segments[i + 1]
-        });
-    }
-
-    return seeds.sort((a,b) => a.start - b.start);
-}
-
-function processNewMap(line) {
+function processNewMap(line: string) {
     if(currMap != null){
         sortedKeys[currMap] = Object.keys(allMap[currMap]).map(v => parseInt(v)).sort((a,b) => a - b);
+        console.log(sortedKeys[currMap]);
     }
 
     currMap = line.split(" ")[0].split("-")[0].trim();
+    if(!currMap){
+        return;
+    }
+
     allMap[currMap] = {};
 }
 
-function processLine(line) {
+function processLine(line: string) {
     if(line == ""){
         return;
     }
@@ -51,21 +35,20 @@ function processLine(line) {
     buildMap(parts);
 }
 
-function buildMap(parts){
-    const newMax = Math.max(parts[0], parts[1]) + parts[2];
-    if(newMax > maxSize){
-        maxSize = newMax;
+function buildMap(parts: number[]){
+    if(!currMap){
+        return;
     }
 
-    allMap[currMap][parts[0]] = [parts[1], parts[2]];
+    allMap[currMap][parts[1]] = [parts[0], parts[2]];
 }
 
-function tryGetMapValue(map, val){
+function tryGetMapValue(map: string, val: number){
     console.log(`Mapping ${map} ${val}...`);
 
     if(!allMap[map].hasOwnProperty(val)){
         console.log("Not in map!");
-        let closestKey = null;
+        let closestKey: number | null = null;
         for(const key of sortedKeys[map]){
             if(key > val){
                 break;
@@ -96,9 +79,9 @@ function tryGetMapValue(map, val){
     return allMap[map][val][0];
 }
 
-function getSeedAtLocation(location){
-    console.log(`Starting location ${location}`);
-    let index = location;
+function getSeedLocation(seed: number){
+    console.log(`Starting seed ${seed}`);
+    let index = seed;
 
     for(const key of order){
         index = tryGetMapValue(key, index);
@@ -107,26 +90,7 @@ function getSeedAtLocation(location){
     }
 
     console.log(`Final value: ${index}`);
-    if(matchesSeed(index)){
-        console.log(`${index} is a seed!`);
-        return location;
-    }
-
-    return null;
-}
-
-function matchesSeed(num){
-    for(const seed of seeds){
-        if(seed.start > num){
-            return false;
-        }
-
-        if(seed.start < num && seed.end > num){
-            return true;
-        }
-    }
-
-    return false;
+    return index;
 }
 
 const input = getPuzzleInput(__dirname); //, "example.txt");
@@ -134,11 +98,6 @@ const input = getPuzzleInput(__dirname); //, "example.txt");
 input.slice(1).forEach(processLine);
 processNewMap(""); //make sure we sort the final map too!
 
-const seeds = expandSeeds(input[0]);
+const seeds = input[0].split(":")[1].trim().split(" ").map(n => getSeedLocation(parseInt(n)));
 
-for(let i = 0; i < maxSize; i++){
-    if(getSeedAtLocation(i) != null){
-        _log(`Lowest location: ${i}`);
-        break;
-    }
-}
+console.log(Math.min(...seeds));

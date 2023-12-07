@@ -1,51 +1,45 @@
-const { getPuzzleInput } = require("../utils");
+import {getPuzzleInput} from "../utils";
 
-function isNumeric(char){
+function isNumeric(char: string){
     return !isNaN(parseInt(char));
 }
 
-function parseLine(line, lineIndex){
+function parseLine(line: string, lineIndex: number){
     let currNumString = "";
-    let isAdjacent = false;
-    let position = null;
-    let lineTotal = 0;
+    let position: number[][] | null = null;
     
     for(let i = 0; i < line.length; i++){
         const char = line[i];
 
         if(!isNumeric(char)){
-            if(currNumString != "" && isAdjacent){
+            if(currNumString != "" && position){
                 setGear(position, currNumString);
             }
 
             currNumString = "";
-            isAdjacent = false;
             position = null;
             continue;
         }
 
         
         currNumString += char;
-        if(!isAdjacent){
+        if(!position){
             position = checkGear(i, lineIndex);
-            if(position.length > 0){
-                isAdjacent = true;
-            }
         }
     }
 
-    if(currNumString != "" && isAdjacent){
+    if(currNumString != "" && position){
         setGear(position, currNumString);
     }
 }
 
-function checkGear(xPos, yPos){
+function checkGear(xPos: number, yPos: number){
     const minX = Math.max(0, xPos - 1);
     const maxX = Math.min(input[0].length - 1, xPos + 1);
     const minY = Math.max(0, yPos - 1);
     const maxY = Math.min(input.length - 1, yPos + 1);
 
-    const matches = [];
+    const matches: number[][] = [];
 
     for(let y = minY; y <= maxY; y++){
         for(let x = minX; x <= maxX; x++){
@@ -63,7 +57,7 @@ function checkGear(xPos, yPos){
     return matches;
 }
 
-function setGear(matches, valueStr){
+function setGear(matches: number[][], valueStr: string){
     for(const [y, x] of matches){
 
     if(!gears.hasOwnProperty(y)){
@@ -95,12 +89,8 @@ function sumGears(){
 }
 
 const input = getPuzzleInput(__dirname);
-const gears = {};
-let total = 0
-input.forEach((line, index) => total += parseLine(line, index));
+const gears: {[key:string]: {[key:string]: number[]}} = {};
+input.forEach((line, index) => parseLine(line, index));
 console.log(gears);
 
 console.log(sumGears());
-
-// parseLine(input[38], 38);
-// console.log(gears);

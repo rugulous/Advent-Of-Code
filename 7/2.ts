@@ -1,4 +1,5 @@
-const {getPuzzleInput} = require("../utils");
+import { getPuzzleInput } from "../utils";
+import { IHand } from "./type";
 
 //general algorithm
 //- extract hands
@@ -18,7 +19,7 @@ const {getPuzzleInput} = require("../utils");
 
 const cardOrder = ['J','2','3','4','5','6','7','8','9','T','Q','K','A'];
 
-function scoreOnlyJokers(numJokers){
+function scoreOnlyJokers(numJokers: number){
     if(numJokers == 0){
         return 1; //high card
     }
@@ -38,7 +39,7 @@ function scoreOnlyJokers(numJokers){
     return 7; //5 of a kind
 }
 
-function getScoreForOneMatch(numCards, numJokers){
+function getScoreForOneMatch(numCards: number, numJokers: number){
     const match = numCards + numJokers;
 
     if(match >= 5){
@@ -56,7 +57,7 @@ function getScoreForOneMatch(numCards, numJokers){
     return 2; //1 pair
 }
 
-function getScoreForTwoMatches(match1, match2, numJokers){
+function getScoreForTwoMatches(match1: number, match2: number, numJokers: number){
     const highest = Math.max(match1, match2);
 
     if(highest == 3){
@@ -78,7 +79,7 @@ function getScoreForTwoMatches(match1, match2, numJokers){
     return 3; //2 pair
 }
 
-function getScoreForMatches([matches, numJokers]){
+function getScoreForMatches(matches: object, numJokers: number){
     const keys = Object.keys(matches);
 
     if(keys.length == 0){
@@ -93,7 +94,7 @@ function getScoreForMatches([matches, numJokers]){
 
 }
 
-function getMatches(hand){
+function getMatches(hand: string): [object, number]{
     const matches = {};
     let numJokers = 0;
 
@@ -122,7 +123,7 @@ function getMatches(hand){
     return [matches, numJokers];
 }
 
-function parseInput(line){
+function parseInput(line: string): IHand{
     const data = line.split(" ");
     return {
         hand: data[0],
@@ -131,8 +132,11 @@ function parseInput(line){
     };
 }
 
-function rankHands(hands){
-    hands.forEach(hand => hand.score = getScoreForMatches(getMatches(hand.hand)));
+function rankHands(hands: IHand[]){
+    hands.forEach(hand => {
+        const [matches, numJokers] = getMatches(hand.hand);
+        hand.score = getScoreForMatches(matches, numJokers)
+    });
 
     hands.sort((a,b) => {
         if(a.score != b.score){

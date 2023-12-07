@@ -1,7 +1,7 @@
 const { getPuzzleInput } = require("../utils");
 
-function extractNumbers(line) {
-    const nums = [];
+function extractNumbers(line: string) {
+    const nums: number[] = [];
     const strings = line.split(" ");
     for (const string of strings) {
         const result = parseInt(string);
@@ -13,10 +13,10 @@ function extractNumbers(line) {
     return nums;
 }
 
-function parseLine(line, index) {
-    let [winning, yours] = line.split(":")[1].split("|");
-    winning = extractNumbers(winning);
-    yours = extractNumbers(yours);
+function parseLine(line: string, index: number) {
+    const parts = line.split(":")[1].split("|");
+    const winning = extractNumbers(parts[0]);
+    const yours = extractNumbers(parts[1]);
 
     let matches = 0;
 
@@ -33,7 +33,7 @@ function parseLine(line, index) {
     }
 }
 
-function addCopy(line, numToAdd = 1){
+function addCopy(line: number, numToAdd: number = 1){
     if(!copies.hasOwnProperty(line)){
         copies[line] = 0;
     }
@@ -41,8 +41,8 @@ function addCopy(line, numToAdd = 1){
     copies[line] += numToAdd;
 }
 
-const copies = {};
+const copies: {[key: string]: number} = {};
 const input = getPuzzleInput(__dirname)
-input.forEach((val, i) => parseLine(val, i));
+input.forEach((val: string, i: number) => parseLine(val, i));
 
-console.log(Object.keys(copies).reduce((acc, val) => acc += copies[val], input.length));
+console.log(Object.keys(copies).reduce((acc, val) => acc + copies[val], input.length));

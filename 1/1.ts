@@ -1,6 +1,6 @@
-const {getPuzzleInput} = require("../utils");
+import {getPuzzleInput} from "../utils";
 
-function tryParseInt(char){
+function tryParseInt(char: string): string | null{
     if(isNaN(parseInt(char))){
         return null;
     }
@@ -8,9 +8,9 @@ function tryParseInt(char){
     return char;
 }
 
-function extractNumbers(line){
-    let firstNum = null;
-    let lastNum = null;
+function extractNumbers(line: string){
+    let firstNum: string | null = null;
+    let lastNum: string | null = null;
 
     for(const char of line){
         const val = tryParseInt(char);
@@ -23,6 +23,10 @@ function extractNumbers(line){
         } else {
             lastNum = val;
         }
+    }
+
+    if(!firstNum){
+        return 0;
     }
 
     if(!lastNum){
