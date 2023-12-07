@@ -105,11 +105,11 @@ function rankHands(hands){
             }
         }
     });
-    
+
     return hands;
 }
 
-const input = getPuzzleInput(__dirname, "example.txt").map(parseInput);
+const input = getPuzzleInput(__dirname).map(parseInput);
 const hands = rankHands(input);
 const winnings = hands.reduce((acc, val, index) => acc + (val.bid * (index + 1)), 0);
 console.log(winnings);
