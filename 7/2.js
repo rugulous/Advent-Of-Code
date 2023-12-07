@@ -1,58 +1,63 @@
 const {getPuzzleInput} = require("../utils");
 
+//general algorithm
+//- extract hands
+//- allocate a score
+//  - 5 of a kind = 7
+//  - 4 of a kind = 6
+//  - full house = 5
+//  - 3 of a kind = 4
+//  - 2 pair = 3 
+//  - 1 pair = 2
+//  - high card = 1
+//
+//- sort by score
+//- if scores are equal, compare cards using below order
+//- multiply (sortedPos + 1) by bid
+//- return sum
+
 const cardOrder = ['J','2','3','4','5','6','7','8','9','T','Q','K','A'];
 
-function getScoreForMatches([matches, numJokers]){
-    //5 of a kind = 7
-    //4 of a kind = 6
-    //full house = 5
-    //3 of a kind = 4
-    //2 pair = 3 
-    //1 pair = 2
-    //high card = 1
-
-    const keys = Object.keys(matches);
-
-    if(keys.length == 0){
-        if(numJokers == 0){
-            return 1; //high card
-        }
-
-        if(numJokers == 1){
-            return 2; //1 pair
-        }
-
-        if(numJokers == 2){
-            return 4; //3 of a kind
-        }
-
-        if(numJokers == 3){
-            return 6; //4 of a kind
-        }
-
-        return 7; //5 of a kind
+function scoreOnlyJokers(numJokers){
+    if(numJokers == 0){
+        return 1; //high card
     }
 
-    if(keys.length == 1){
-        const match = matches[keys[0]] + numJokers;
-        if(match >= 5){
-            return 7; //5 of a kind
-        }
-        
-        if(match >= 4){
-            return 6; //4 of a kind
-        }
-
-        if(match >= 3){
-            return 4; //3 of a kind
-        }
-
+    if(numJokers == 1){
         return 2; //1 pair
     }
 
-    const match1 = matches[keys[0]];
-    const match2 = matches[keys[1]];
-    const highest = Math.max(match1, match2)
+    if(numJokers == 2){
+        return 4; //3 of a kind
+    }
+
+    if(numJokers == 3){
+        return 6; //4 of a kind
+    }
+
+    return 7; //5 of a kind
+}
+
+function getScoreForOneMatch(numCards, numJokers){
+    const match = numCards + numJokers;
+
+    if(match >= 5){
+        return 7; //5 of a kind
+    }
+    
+    if(match >= 4){
+        return 6; //4 of a kind
+    }
+
+    if(match >= 3){
+        return 4; //3 of a kind
+    }
+
+    return 2; //1 pair
+}
+
+function getScoreForTwoMatches(match1, match2, numJokers){
+    const highest = Math.max(match1, match2);
 
     if(highest == 3){
         if(numJokers >= 2){
@@ -71,6 +76,21 @@ function getScoreForMatches([matches, numJokers]){
     }
 
     return 3; //2 pair
+}
+
+function getScoreForMatches([matches, numJokers]){
+    const keys = Object.keys(matches);
+
+    if(keys.length == 0){
+        return scoreOnlyJokers(numJokers);
+    }
+
+    if(keys.length == 1){
+        return getScoreForOneMatch(matches[keys[0]], numJokers);
+    }
+
+    return getScoreForTwoMatches(matches[keys[0]], matches[keys[1]], numJokers);
+
 }
 
 function getMatches(hand){
@@ -112,28 +132,7 @@ function parseInput(line){
 }
 
 function rankHands(hands){
-    hands.forEach(hand => {
-        if(hand.hand.indexOf('J') >= 0){
-            console.log(`Parsing hand ${hand.hand}...`);
-        }
-
-        const matches = getMatches(hand.hand);
-        if(hand.hand.indexOf('J') >= 0){
-            console.log(matches);
-        }
-
-        const score = getScoreForMatches(matches);
-        if(hand.hand.indexOf('J') >= 0){
-            console.log(`Calculated score: ${score}`);
-        }
-
-        hand.score = score;
-
-        if(hand.hand.indexOf('J') >= 0){
-            console.log("-----");
-            console.log();
-        }
-    });
+    hands.forEach(hand => hand.score = getScoreForMatches(getMatches(hand.hand)));
 
     hands.sort((a,b) => {
         if(a.score != b.score){
@@ -141,12 +140,11 @@ function rankHands(hands){
         }
 
         for(let i = 0; i < a.hand.length; i++){
-            const aCardScore = cardOrder.indexOf(a.hand[i]);
-            const bCardScore = cardOrder.indexOf(b.hand[i]);
-
-            if(aCardScore != bCardScore){
-                return aCardScore - bCardScore;
+            if(a.hand[i] == b.hand[i]){
+                continue;
             }
+
+            return cardOrder.indexOf(a.hand[i]) - cardOrder.indexOf(b.hand[i]);
         }
     });
 
@@ -155,10 +153,6 @@ function rankHands(hands){
 
 const input = getPuzzleInput(__dirname).map(parseInput);
 const hands = rankHands(input);
-
-for(let i = 0; i < hands.length; i++){
-    console.log(hands[i]);
-}
 
 const winnings = hands.reduce((acc, val, index) => acc + (val.bid * (index + 1)), 0);
 console.log(winnings);
