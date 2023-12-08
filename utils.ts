@@ -15,18 +15,18 @@ export function range(start: number, end: number): number[] {
     return arr;
 }
 
-export function grid<T>(width: number, defaultValue: T | null = null, depth: number = width){
+export function grid<T>(width: number, defaultValue: T | null = null, depth: number = width) {
     const grid: T[][] = [];
-    for(let i = 0; i < width; i++){
+    for (let i = 0; i < width; i++) {
         const inner = [];
 
-        for(let j = 0; j < depth; j++){
+        for (let j = 0; j < depth; j++) {
             inner.push(defaultValue);
         }
 
         grid.push(inner);
     }
-    
+
     return grid;
 }
 
@@ -51,30 +51,11 @@ export function greatestCommonDivisor(num1: number, num2: number) {
     return greatestCommonDivisor(num2, num1 % num2);
 }
 
-export function getSmallestN(array: number[], n: number){
+export function getSmallestN(array: number[], n: number) {
     array.sort((a, b) => a - b);
     return array.slice(0, n);
 }
 
-export function countOccurrences(string: string, char: string){
+export function countOccurrences(string: string, char: string) {
     return string.split(char).length - 1;
-}
-
-export function toBinary(num: number, numBits: number = 8): boolean[]{
-    const array = (num >>> 0).toString(2).split("").map(b => b == '1');
-    while(array.length < numBits){
-        array.unshift(false);
-    }
-
-    return array;
-}
-
-export function fromBinary(bits: boolean[]): number{
-    return parseInt(bits.map(v => v ? '1' : '0').join(""), 2);
-}
-
-export function invert(bits: boolean[]){
-    for(let i = 0; i < bits.length; i++){
-        bits[i] = !bits[i];
-    }
 }
