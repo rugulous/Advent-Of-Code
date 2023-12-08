@@ -26,10 +26,12 @@ function sayWhatYouSee(value: string){
     return output;
 }
 
-const startingValue = "1";
+const startingValue = "3113322113";
 let currVal = startingValue;
 
-for(let i = 0; i < 5; i++){
+for(let i = 0; i < 40; i++){
     currVal = sayWhatYouSee(currVal);
     console.log(currVal);
 }
+
+console.log(currVal.length);
