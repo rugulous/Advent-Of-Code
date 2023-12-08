@@ -59,3 +59,14 @@ export function getSmallestN(array: number[], n: number) {
 export function countOccurrences(string: string, char: string) {
     return string.split(char).length - 1;
 }
+
+export function shuffle<T>(array: T[]): T[] {
+    const out = []
+
+    while (array.length > 0) {
+        const index = Math.floor(Math.random() * array.length);
+        out.push(array.splice(index, 1)[0]);
+    }
+
+    return out;
+}
