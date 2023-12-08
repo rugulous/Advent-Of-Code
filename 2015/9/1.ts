@@ -24,17 +24,20 @@ function getShortestNotVisited(currNode: string, visited: string[]){
 
 function getRoute(start: string){
     let currNode = start;
-    const visited = [];
+    const visited = [currNode];
     let distance = 0;
 
     while(true){
         const closest = getShortestNotVisited(currNode, visited);
         if(closest == null){
             //hopefully we're done lol
+            if(visited.length)
+
             return distance;
         }
 
         distance += closest.distance;
+        currNode = closest.label;
         visited.push(closest.label);
     }
 }
@@ -55,5 +58,5 @@ function parseLine(line: string){
     map[end][start] = distance;
 }
 
-getPuzzleInput(__dirname, "example.txt").forEach(parseLine);
+getPuzzleInput(__dirname).forEach(parseLine);
 console.log(Math.min(...Object.keys(map).map(getRoute)));
