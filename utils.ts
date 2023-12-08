@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
 import { join } from "path";
+import { ILooseObject } from "./type";
 
 export function getPuzzleInput(dir: string, file = "input.txt"): string[] {
     const input = readFileSync(join(dir, file), "utf-8");
@@ -69,4 +70,18 @@ export function shuffle<T>(array: T[]): T[] {
     }
 
     return out;
+}
+
+export function countAllCharacters(string: string): ILooseObject{
+    const counter: ILooseObject = {};
+
+    for(const char of string){
+        if(!counter.hasOwnProperty(char)){
+            counter[char] = 1;
+        } else {
+            counter[char]++;
+        }
+    }
+
+    return counter;
 }
