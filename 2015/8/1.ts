@@ -25,6 +25,6 @@ function scoreLine(line: string){
     return line.length - inMemChars;
 }
 
-const input = getPuzzleInput(__dirname, "example.txt");
+const input = getPuzzleInput(__dirname);
 const total = input.reduce((acc, val) => acc + scoreLine(val), 0);
 console.log(total);
