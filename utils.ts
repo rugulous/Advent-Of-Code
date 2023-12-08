@@ -59,3 +59,22 @@ export function getSmallestN(array: number[], n: number){
 export function countOccurrences(string: string, char: string){
     return string.split(char).length - 1;
 }
+
+export function toBinary(num: number, numBits: number = 8): boolean[]{
+    const array = (num >>> 0).toString(2).split("").map(b => b == '1');
+    while(array.length < numBits){
+        array.unshift(false);
+    }
+
+    return array;
+}
+
+export function fromBinary(bits: boolean[]): number{
+    return parseInt(bits.map(v => v ? '1' : '0').join(""), 2);
+}
+
+export function invert(bits: boolean[]){
+    for(let i = 0; i < bits.length; i++){
+        bits[i] = !bits[i];
+    }
+}
