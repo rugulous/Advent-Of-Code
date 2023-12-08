@@ -40,3 +40,7 @@ export function getSmallestN(array: number[], n: number){
     array.sort((a, b) => a - b);
     return array.slice(0, n);
 }
+
+export function countOccurrences(string: string, char: string){
+    return string.split(char).length - 1;
+}

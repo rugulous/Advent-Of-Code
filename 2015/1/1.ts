@@ -1,8 +1,8 @@
-import {getPuzzleInput} from "../../utils";
+import {getPuzzleInput, countOccurrences} from "../../utils";
 
 const input = getPuzzleInput(__dirname)[0];
 
-const open = input.split("(").length;
-const close = input.split(")").length;
+const open = countOccurrences(input, "(");
+const close = countOccurrences(input, ")");
 
 console.log(open - close);
