@@ -1,4 +1,4 @@
-import {getPuzzleInput} from "../utils";
+import {getPuzzleInput} from "../../utils";
 
 function isNumeric(char: string){
     return !isNaN(parseInt(char));

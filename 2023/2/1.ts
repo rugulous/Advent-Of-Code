@@ -1,5 +1,13 @@
-import {getPuzzleInput} from "../utils";
+import {getPuzzleInput} from "../../utils";
 import { IRgb } from "./type";
+
+const colours = ["red","green","blue"];
+
+const limits: IRgb = {
+    red: 12,
+    green: 13,
+    blue: 14
+};
 
 function parseReveal(reveal: string): IRgb {
     const parts = reveal.split(",");
@@ -41,8 +49,14 @@ function parseInput(line: string) {
 }
 
 function getInputValue(line: string){
-    const {maxGuess} = parseInput(line);
-    return maxGuess.red * maxGuess.green * maxGuess.blue;
+    const parsedInput = parseInput(line);
+    for(const k of colours){
+        if(parsedInput.maxGuess[k] > limits[k]){
+            return 0;
+        }
+    }
+
+    return parsedInput.id;
 }
 
 const score = getPuzzleInput(__dirname).reduce((acc, val) => acc + getInputValue(val), 0);

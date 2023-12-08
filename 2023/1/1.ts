@@ -1,4 +1,4 @@
-import {getPuzzleInput} from "../utils";
+import {getPuzzleInput} from "../../utils";
 
 function tryParseInt(char: string): string | null{
     if(isNaN(parseInt(char))){

@@ -1,4 +1,4 @@
-import {getPuzzleInput} from "../utils";
+import {getPuzzleInput} from "../../utils";
 
 interface IRange {
     start: number,

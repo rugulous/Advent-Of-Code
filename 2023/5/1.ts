@@ -1,4 +1,4 @@
-import {getPuzzleInput} from "../utils";
+import {getPuzzleInput} from "../../utils";
 
 let currMap: string | null = null;
 let allMap: {[key: string]: {[key: string]: number[]}} = {};

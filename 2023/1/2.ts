@@ -1,4 +1,4 @@
-import {getPuzzleInput} from "../utils";
+import {getPuzzleInput} from "../../utils";
 
 const validChars: {[key: string]: string} = {
     one: "1",

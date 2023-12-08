@@ -1,4 +1,4 @@
-import { getPuzzleInput } from "../utils";
+import { getPuzzleInput } from "../../utils";
 import { IRace } from "./type";
 
 function extractNumbers(line: string){

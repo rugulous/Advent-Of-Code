@@ -1,4 +1,4 @@
-import { getPuzzleInput } from "../utils";
+import { getPuzzleInput } from "../../utils";
 import { IHand } from "./type";
 
 const cardOrder = ['2','3','4','5','6','7','8','9','T','J','Q','K','A'];
