@@ -35,3 +35,8 @@ export function greatestCommonDivisor(num1: number, num2: number) {
 
     return greatestCommonDivisor(num2, num1 % num2);
 }
+
+export function getSmallestN(array: number[], n: number){
+    array.sort((a, b) => a - b);
+    return array.slice(0, n);
+}
