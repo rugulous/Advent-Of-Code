@@ -75,7 +75,7 @@ function solveWires() {
     }
 }
 
-const input = getPuzzleInput(__dirname).forEach(processWire);
+getPuzzleInput(__dirname).forEach(processWire);
 
 solvedWires.b = 16076;
 if(rawWires.hasOwnProperty("b")){
