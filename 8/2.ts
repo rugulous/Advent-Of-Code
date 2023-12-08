@@ -1,5 +1,5 @@
 import { ILooseObject } from '../type';
-import { getPuzzleInput } from '../utils';
+import { getPuzzleInput, leastCommonMultiple } from '../utils';
 
 const nodes: ILooseObject = {};
 
@@ -13,32 +13,26 @@ function getStartingNodes() {
     return Object.keys(nodes).filter(k => k[2] == "A");
 }
 
-function solve() {
-    let numMoves = 0;
-    const locations = getStartingNodes();
+function solve(start: string){
+    let currentNode = start;
+    let currMoves = 0;
 
-    while (true) {
-        for (const dir of directions) {
-            for (let i = 0; i < locations.length; i++) {
-                locations[i] = nodes[locations[i]][dir]
-            }
+    while(true){
+        for(const direction of directions){
+            currentNode = nodes[currentNode][direction];
+            currMoves++;
 
-            numMoves++;
-
-            if(checkAllSolved(locations)){
-                return numMoves;
+            if(currentNode[2] == "Z"){
+                return currMoves;
             }
         }
     }
 }
 
-function checkAllSolved(locations: string[]){
-    return locations.length == locations.filter(k => k[2] == "Z").length;
-}
-
-const input = getPuzzleInput(__dirname, "example-2.txt");
+const input = getPuzzleInput(__dirname);
 const directions = input[0].split("").map(d => d == "L" ? 0 : 1);
 input.splice(2).forEach(l => parseInput(l));
 
-const requiredMoves = solve();
-console.log(requiredMoves);
+const locations = getStartingNodes();
+const lengths = locations.map(solve);
+console.log(leastCommonMultiple(lengths));
