@@ -15,6 +15,21 @@ export function range(start: number, end: number): number[] {
     return arr;
 }
 
+export function grid<T>(width: number, defaultValue: T | null = null, depth: number = width){
+    const grid: T[][] = [];
+    for(let i = 0; i < width; i++){
+        const inner = [];
+
+        for(let j = 0; j < depth; j++){
+            inner.push(defaultValue);
+        }
+
+        grid.push(inner);
+    }
+    
+    return grid;
+}
+
 export function leastCommonMultiple(values: number[]) {
     if (values.length == 0) {
         return null;
