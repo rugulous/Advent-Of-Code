@@ -13,17 +13,19 @@ function solve(){
     let currentNode = "AAA";
     let currMoves = 0;
 
-    while(currentNode != "ZZZ"){
+    while(true){
         for(const direction of directions){
             currentNode = nodes[currentNode][direction];
             currMoves++;
+
+            if(currentNode == "ZZZ"){
+                return currMoves;
+            }
         }
     }
-
-    return currMoves;
 }
 
-const input = getPuzzleInput(__dirname, "example-2.txt");
+const input = getPuzzleInput(__dirname);
 const directions = input[0].split("").map(d => d == "L" ? 0 : 1);
 input.splice(2).forEach(l => parseInput(l));
 
