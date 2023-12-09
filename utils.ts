@@ -85,3 +85,16 @@ export function countAllCharacters(string: string): ILooseObject{
 
     return counter;
 }
+
+export function arrayHasSameValue<T>(array: T[]){
+    if(array.length == 0){
+        return false;
+    }
+
+    if(array.length == 1){
+        return true;
+    }
+
+    const searchEl = array[0];
+    return !array.some(x => x != searchEl);
+}
