@@ -15,5 +15,5 @@ function getNextValueForSequence(sequence: number[]){
     return sequence[sequence.length - 1] + numToAdd;
 }
 
-const input = getPuzzleInput(__dirname, "example.txt").map(line => line.split(" ").map(n => parseInt(n)));
+const input = getPuzzleInput(__dirname).map(line => line.split(" ").map(n => parseInt(n)));
 console.log(input.reduce((acc, val) => acc + getNextValueForSequence(val), 0));
