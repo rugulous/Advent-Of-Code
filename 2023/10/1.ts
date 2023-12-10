@@ -49,7 +49,7 @@ function tryMove(direction: number, newY: number = y, newX:number = x): boolean{
     return true;
 }
 
-const rawMap = getPuzzleInput(__dirname, "example-1.1.txt");
+const rawMap = getPuzzleInput(__dirname, "example-1.2.txt");
 const map = grid(rawMap[0].length, false, rawMap.length);
 
 let [y, x] = findStartPoint();
