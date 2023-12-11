@@ -33,21 +33,21 @@ function tryMove(direction: number, newY: number = y, newX: number = x): boolean
     return !map[newY][newX] && allowedMoves[direction] && pieces[symbol][flippedDirections[direction]];
 }
 
-// function trimMap(){
-//     for(let i = map.length - 1; i >= 0; i--){
-//         if(arrayHasSameValue(map[i]) && !map[i][0]){
-//             map.splice(i, 1);
-//         }
-//     }
+function trimMap(){
+    for(let i = map.length - 1; i >= 0; i--){
+        if(arrayHasSameValue(map[i]) && !map[i][0]){
+            map.splice(i, 1);
+        }
+    }
 
-//     for(let x = map[0].length - 1; x >= 0; x--){
-//         if(columnHasSameValue(map, x) && !map[0][x]){
-//             for(let y = 0; y < map.length; y++){
-//                 map[y].splice(x, 1);
-//             }
-//         }
-//     }
-// }
+    for(let x = map[0].length - 1; x >= 0; x--){
+        if(columnHasSameValue(map, x) && !map[0][x]){
+            for(let y = 0; y < map.length; y++){
+                map[y].splice(x, 1);
+            }
+        }
+    }
+}
 
 function applyDirt() {
     let x;
@@ -77,13 +77,6 @@ function applyDirt() {
         for (y = 1; y < rawMap.length - 1; y++) {
             for (x = 1; x < rawMap[0].length - 1; x++) {
                 if (map[y][x] || map[y][x] === null) { //bit of pipe, or already outside dirt
-                    continue;
-                }
-
-                if (rawMap[y][x] != ".") { //MUST be dirt
-                    console.log(`${y}, ${x} is not dirt! (${rawMap[y][x]})`);
-                    map[y][x] = null;
-                    changed++;
                     continue;
                 }
 
@@ -117,7 +110,18 @@ function output() {
     console.log();
 }
 
-const rawMap = getPuzzleInput(__dirname, "example-2.1.txt");
+function isInsidePipe(x: number, y: number){
+    if(map[y][x]){
+        return true;
+    }
+
+    let inPipe = false;
+    for(let yPos = 0; yPos < y; y++){
+        inPipe = !inPipe;
+    }
+}
+
+const rawMap = getPuzzleInput(__dirname, "example-2.2.txt");
 const map = grid(rawMap.length, false, rawMap[0].length);
 
 let [y, x] = findStartPoint();
@@ -142,6 +146,10 @@ while (true) {
 
 output();
 applyDirt();
+output();
+trimMap();
+output();
+checkInsidePipes();
 output();
 
 console.log(map.flat().filter(t => t === false).length);
