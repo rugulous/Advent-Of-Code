@@ -110,18 +110,48 @@ function output() {
     console.log();
 }
 
-function isInsidePipe(x: number, y: number){
+function isInsidePipe(y: number, x: number){
     if(map[y][x]){
         return true;
     }
 
     let inPipe = false;
-    for(let yPos = 0; yPos < y; y++){
-        inPipe = !inPipe;
+    for(let yPos = 0; yPos < y; yPos++){
+        if(map[yPos][x]){
+            inPipe = !inPipe;
+        }
+    }
+
+    if(!inPipe){
+        return false;
+    }
+
+    inPipe = false;
+
+    for(let xPos = 0; xPos < x; xPos++){
+        if(map[y][xPos]){
+            inPipe = !inPipe;
+        }
+    }
+
+    return inPipe;
+}
+
+function checkInsidePipes(){
+    for(let y = 0; y < map.length; y++){
+        for(let x = 0; x < map[y].length; x++){
+            if(map[y][x] === null){
+                continue;
+            }
+
+            if(!isInsidePipe(y, x)){
+                map[y][x] = null;
+            }
+        }
     }
 }
 
-const rawMap = getPuzzleInput(__dirname, "example-2.2.txt");
+const rawMap = getPuzzleInput(__dirname, "example-2.3.txt");
 const map = grid(rawMap.length, false, rawMap[0].length);
 
 let [y, x] = findStartPoint();
