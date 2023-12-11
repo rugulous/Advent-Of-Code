@@ -1,49 +1,56 @@
 import { arrayHasSameValue, columnHasSameValue, getPuzzleInput } from "../../utils";
 
-function expandHorizontally(universe: string[][]){
-    const toAdd = [];
+function expandVertically(universe: string[][]) {
+    const offsets = [];
+    let currOffset = 0;
 
-    for(let i = 0; i < universe.length; i++){
-        if(arrayHasSameValue(universe[i], ".")){
-            toAdd.push(i);
+    for (let i = 0; i < universe.length; i++) {
+        offsets.push(currOffset);
+        
+        if (arrayHasSameValue(universe[i], ".")) {
+            currOffset++;
         }
     }
 
-    for(let i = 0; i < toAdd.length; i++){
-        universe.splice(i + toAdd[i], 0, [...universe[i + toAdd[i]]]);
-    }
+    return offsets;
 }
 
-function expandVertically(universe: string[][]){
-    const toAdd = [];
+function expandHorizontally(universe: string[][]) {
+    const offets = [];
+    let currOffset = 0;
 
-    for(let i = 0; i < universe[0].length; i++){
-        if(columnHasSameValue(universe, i, ".")){
-            toAdd.push(i);
+    for (let i = 0; i < universe[0].length; i++) {
+        offets.push(currOffset);
+        
+        if (columnHasSameValue(universe, i, ".")) {
+            currOffset++;
         }
     }
 
-    for(let i = 0; i < toAdd.length; i++){
-        for(let y = 0; y < universe.length; y++){
-            universe[y].splice(i + toAdd[i], 0, ".");
-        }
-    }
+    return offets;
 }
 
-function expandUniverse(universe: string[][]){
-    expandHorizontally(universe);
-    expandVertically(universe);
-
-    return universe;
+function getOffsetCoordinate(y: number, x:number){
+    return {
+        y: y + offsets.y[y], 
+        x: x + offsets.x[x]
+    };
 }
 
-function locateGalaxies(universe: string[][]){
+function expandUniverse(universe: string[][]) {
+    const y = expandVertically(universe);
+    const x = expandHorizontally(universe);
+
+    return {x, y};
+}
+
+function locateGalaxies(universe: string[][]) {
     const galaxies = [];
 
-    for(let y = 0; y < universe.length; y++){
-        for(let x = 0; x < universe[0].length; x++){
-            if(universe[y][x] == "#"){
-                galaxies.push({y, x});
+    for (let y = 0; y < universe.length; y++) {
+        for (let x = 0; x < universe[0].length; x++) {
+            if (universe[y][x] == "#") {
+                galaxies.push(getOffsetCoordinate(y, x));
             }
         }
     }
@@ -51,24 +58,13 @@ function locateGalaxies(universe: string[][]){
     return galaxies;
 }
 
-function output(universe: string[][]){
-    for(const line of universe){
-        let row = "";
-        for(const char of line){
-            row += char;
-        }
-        console.log(row);
-    }
-}
-
 const input = getPuzzleInput(__dirname).map(l => l.split(""));
-expandUniverse(input);
-//output(input);
+const offsets = expandUniverse(input);
 
 let total = 0;
 const galaxies = locateGalaxies(input);
-for(let i = 0; i < galaxies.length; i++){
-    for(let j = i + 1; j < galaxies.length; j++){
+for (let i = 0; i < galaxies.length; i++) {
+    for (let j = i + 1; j < galaxies.length; j++) {
         const distance = Math.abs(galaxies[i].x - galaxies[j].x) + Math.abs(galaxies[i].y - galaxies[j].y);
         total += distance;
     }
