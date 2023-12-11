@@ -37,6 +37,20 @@ function expandUniverse(universe: string[][]){
     return universe;
 }
 
+function locateGalaxies(universe: string[][]){
+    const galaxies = [];
+
+    for(let y = 0; y < universe.length; y++){
+        for(let x = 0; x < universe[0].length; x++){
+            if(universe[y][x] == "#"){
+                galaxies.push({y, x});
+            }
+        }
+    }
+
+    return galaxies;
+}
+
 function output(universe: string[][]){
     for(const line of universe){
         let row = "";
@@ -49,4 +63,15 @@ function output(universe: string[][]){
 
 const input = getPuzzleInput(__dirname, "example.txt").map(l => l.split(""));
 expandUniverse(input);
-output(input);
+//output(input);
+
+let total = 0;
+const galaxies = locateGalaxies(input);
+for(let i = 0; i < galaxies.length; i++){
+    for(let j = i + 1; j < galaxies.length; j++){
+        const distance = Math.abs(galaxies[i].x - galaxies[j].x) + Math.abs(galaxies[i].y - galaxies[j].y);
+        total += distance;
+    }
+}
+
+console.log(total);
