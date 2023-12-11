@@ -61,7 +61,7 @@ function output(universe: string[][]){
     }
 }
 
-const input = getPuzzleInput(__dirname, "example.txt").map(l => l.split(""));
+const input = getPuzzleInput(__dirname).map(l => l.split(""));
 expandUniverse(input);
 //output(input);
 
