@@ -86,21 +86,24 @@ export function countAllCharacters(string: string): ILooseObject {
     return counter;
 }
 
-export function arrayHasSameValue<T>(array: T[]) {
+export function arrayHasSameValue<T>(array: T[], valueToCheck: T | undefined = undefined) {
     if (array.length == 0) {
         return false;
     }
 
     if (array.length == 1) {
-        return true;
+        return valueToCheck == null || array[0] == valueToCheck;
     }
 
     const searchEl = array[0];
-    return !array.some(x => x != searchEl);
+    return  (valueToCheck == undefined || array[0] == valueToCheck) && !array.some(x => x != searchEl);
 }
 
-export function columnHasSameValue<T>(grid: T[][], column: number = 0) {
+export function columnHasSameValue<T>(grid: T[][], column: number = 0, valueToCheck: T | undefined = undefined) {
     const initValue = grid[0][column];
+    if(valueToCheck != undefined && initValue != valueToCheck){
+        return false;
+    }
 
     for (let row = 1; row < grid.length; row++) {
         if (grid[row][column] != initValue) {
