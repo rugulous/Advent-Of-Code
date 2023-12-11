@@ -72,11 +72,11 @@ export function shuffle<T>(array: T[]): T[] {
     return out;
 }
 
-export function countAllCharacters(string: string): ILooseObject{
+export function countAllCharacters(string: string): ILooseObject {
     const counter: ILooseObject = {};
 
-    for(const char of string){
-        if(!counter.hasOwnProperty(char)){
+    for (const char of string) {
+        if (!counter.hasOwnProperty(char)) {
             counter[char] = 1;
         } else {
             counter[char]++;
@@ -86,15 +86,27 @@ export function countAllCharacters(string: string): ILooseObject{
     return counter;
 }
 
-export function arrayHasSameValue<T>(array: T[]){
-    if(array.length == 0){
+export function arrayHasSameValue<T>(array: T[]) {
+    if (array.length == 0) {
         return false;
     }
 
-    if(array.length == 1){
+    if (array.length == 1) {
         return true;
     }
 
     const searchEl = array[0];
     return !array.some(x => x != searchEl);
+}
+
+export function columnHasSameValue<T>(grid: T[][], column: number = 0) {
+    const initValue = grid[0][column];
+
+    for (let row = 1; row < grid.length; row++) {
+        if (grid[row][column] != initValue) {
+            return false;
+        }
+    }
+
+    return true;
 }

@@ -29,37 +29,17 @@ function findStartPoint(){
 
 function tryMove(direction: number, newY: number = y, newX:number = x): boolean{
     const symbol = rawMap[newY][newX];
-    console.log(`Found ${symbol} at ${newY}, ${newX}`);
 
-    if(map[newY][newX]){
-        console.log("We've already visited this place!");
-        return false;
-    }
-
-    if(!allowedMoves[direction]){
-        console.log(`We can't move in direction ${direction}`);
-        return false;
-    }
-
-    if(!pieces[symbol][flippedDirections[direction]]){
-        console.log(`Piece ${symbol} does not allow entry from direction ${flippedDirections[direction]}`);
-        return false;
-    }
-
-    return true;
+    return !map[newY][newX] && allowedMoves[direction] && pieces[symbol][flippedDirections[direction]];
 }
 
 const rawMap = getPuzzleInput(__dirname);
 const map = grid(rawMap[0].length, false, rawMap.length);
 
 let [y, x] = findStartPoint();
-const startPos = {y, x};
 map[y][x] = true;
 
 while(true){
-    console.log(y, x);
-    console.log(allowedMoves);
-
     if(y - 1 >= 0 && tryMove(0, y - 1)){
         y--;
     } else if(y + 1 < rawMap.length && tryMove(2, y + 1)){
@@ -69,7 +49,6 @@ while(true){
     } else if(x + 1 < rawMap[0].length && tryMove(1, y, x + 1)){
         x++;
     } else {
-        console.log("I think we're done?");
         break;
     }
 
@@ -77,5 +56,4 @@ while(true){
     map[y][x] = true;
 }
 
-console.log(map);
 console.log(map.flat().filter(m => m).length / 2);
