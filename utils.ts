@@ -169,3 +169,9 @@ export function arraysEqual<T>(left: T[], right: T[]){
 
     return true;
 }
+
+export function sleep(ms: number) : Promise<void>{
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
