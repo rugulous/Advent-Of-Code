@@ -116,7 +116,7 @@ export function columnHasSameValue<T>(grid: T[][], column: number = 0, valueToCh
     return true;
 }
 
-export function getBoolPermutations(size: number){
+export function getBoolPermutations(size: number): boolean[][]{
     const permutations = [];
     const bits = fill(size, false);
     for(let i = 0; i < (1 << size); i++){
