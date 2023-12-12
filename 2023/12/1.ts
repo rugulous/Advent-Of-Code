@@ -1,40 +1,9 @@
 import { replaceAt, getBoolPermutations, getPuzzleInput, arraysEqual } from "../../utils";
 
-const regExp = /((?<=^|\.)#+(?=\.|$))/g;
-
-function removeCompleted(line: string, targets: number[]): [string, number[]]{
-    const matchCounts = {};
-
-    for(let match of line.matchAll(regExp)){
-        const length = match[0].length;
-
-        if(!matchCounts.hasOwnProperty(length)){
-            matchCounts[length] = {
-                count: 0,
-                positions: []
-            }
-        }
-        matchCounts[length].count++;
-        matchCounts[length].positions.push(match.index);
-
-        if(targets.filter(t => t == length).length == matchCounts[length].count){
-            targets = targets.filter(t => t != length);
-
-            for(const position of matchCounts[length].positions){
-                line = line.substring(0, position) + "-".repeat(length) + line.substring(position + length);
-            }
-        }
-    }
-
-    line = line.replaceAll(/-+/g, "");
-    return [line, targets];
-}
-
 function parseLine(line: string){
     let [puzzle, rawSprings] = line.split(" ");
     let springs = rawSprings.split(",").map(n => parseInt(n));
 
-    [puzzle, springs] = removeCompleted(puzzle, springs);
     return generatePermutations(puzzle, springs);
 }
 
@@ -59,7 +28,6 @@ function checkMatch(solvedLine: string, targets: number[]){
 }
 
 function generatePermutations(line: string, targets: number[]){
-    console.log(targets);
     let numPermutations = 0;
     const replaceable = [...line.matchAll(/\?/g)];
     const permutations = getBoolPermutations(replaceable.length).map(p => p.map(q => q ? "#" : "."));
@@ -72,7 +40,6 @@ function generatePermutations(line: string, targets: number[]){
         }
 
         if(checkMatch(startStr, targets)){
-            console.log(`${startStr} is a match!`);
             numPermutations++;
         }
     }
@@ -80,7 +47,7 @@ function generatePermutations(line: string, targets: number[]){
     return numPermutations;
 }
 
-const input = getPuzzleInput(__dirname, "example.txt");
+const input = getPuzzleInput(__dirname);
 
 //console.log(parseLine(input[1]));
 
