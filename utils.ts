@@ -16,16 +16,18 @@ export function range(start: number, end: number): number[] {
     return arr;
 }
 
+export function fill<T>(size: number, defaultValue: T | null = null){
+    const arr = [];
+    for(let i = 0; i < size; i++){
+        arr.push(defaultValue);
+    }
+    return arr;
+}
+
 export function grid<T>(width: number, defaultValue: T | null = null, depth: number = width) {
     const grid: T[][] = [];
     for (let i = 0; i < width; i++) {
-        const inner = [];
-
-        for (let j = 0; j < depth; j++) {
-            inner.push(defaultValue);
-        }
-
-        grid.push(inner);
+        grid.push(fill(depth, defaultValue));
     }
 
     return grid;
@@ -107,6 +109,56 @@ export function columnHasSameValue<T>(grid: T[][], column: number = 0, valueToCh
 
     for (let row = 1; row < grid.length; row++) {
         if (grid[row][column] != initValue) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+export function getBoolPermutations(size: number){
+    const permutations = [];
+    const bits = fill(size, false);
+    for(let i = 0; i < (1 << size); i++){
+        permutations.push([...bits]);
+        incrementBit(bits);
+    }
+
+    return permutations;
+}
+
+export function incrementBit(data: boolean[]){
+    for(let i = data.length - 1; i >= 0; i--){
+        const result = !data[i];
+        data[i] = result;
+
+        if(result){
+            break;
+        }
+    }
+
+    return data;
+}
+
+export function replaceAt(string: string, index: number, replacement: string){
+    return string.substring(0, index) + replacement + string.substring(index + replacement.length);
+}
+
+export function arraysEqual<T>(left: T[], right: T[]){
+    if(left === right){
+        return true;
+    }
+
+    if(left == null || right == null){
+        return false;
+    }
+
+    if(left.length != right.length){
+        return false;
+    }
+
+    for(let i = 0; i < left.length; i++){
+        if(left[i] != right[i]){
             return false;
         }
     }
