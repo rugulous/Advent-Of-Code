@@ -116,11 +116,15 @@ export function columnHasSameValue<T>(grid: T[][], column: number = 0, valueToCh
     return true;
 }
 
-export function getBoolPermutations(size: number): boolean[][]{
+export function getBoolPermutations(size: number, isValidFn: (permutation: boolean[]) => boolean | null = null): boolean[][]{
     const permutations = [];
     const bits = fill(size, false);
     for(let i = 0; i < (1 << size); i++){
-        permutations.push([...bits]);
+        const perm = [...bits];
+        if(!isValidFn || isValidFn(perm)){
+            permutations.push(perm);
+        }
+
         incrementBit(bits);
     }
 
