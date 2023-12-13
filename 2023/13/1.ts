@@ -1,12 +1,12 @@
-import { arraysEqual, getPuzzleInput } from "../../utils";
+import { getPuzzleInput } from "../../utils";
 
-function splitMaps(fullMap: string[]){
-    const maps = [];
-    let parts = [];
+function splitMaps(fullMap: string[]): string[][] {
+    const maps: string[][] = [];
+    let parts: string[] = [];
 
-    for(const line of fullMap){
-        if(line.length == 0){
-            if(parts.length > 0){
+    for (const line of fullMap) {
+        if (line.length == 0) {
+            if (parts.length > 0) {
                 maps.push(parts);
                 parts = [];
             }
@@ -14,69 +14,53 @@ function splitMaps(fullMap: string[]){
             continue;
         }
 
-        parts.push(line.split(""));
+        parts.push(line);
     }
 
-    if(parts.length > 0){
+    if (parts.length > 0) {
         maps.push(parts);
     }
 
     return maps;
 }
 
-function hasVerticalReflection(map: string[][], column: number){
-    for(let i = 0; i <= map[0].length / 2; i++){
-        const srcCol = column - i;
-        const destCol = column + i - 1;
+function getMirrorAccross(map: string[]): number | null{
+    for(let i = 1; i < map.length; i++){
+        const len = Math.min(i, map.length - i);
+        const left = map.slice(i - len, i);
+        const right = map.slice(i, i + len);
 
-        if(srcCol < 0 || destCol >= map[0].length){
-            continue;
-        }
-
-        for(const element of map){
-            if(element[srcCol] != element[destCol]){
-                return false;
-            }
+        left.reverse();
+        if (left.join('|') === right.join('|')) {
+            return i;
         }
     }
 
-    return true;
+    return null;
 }
 
-function hasHorizontalReflection(map: string[][], row: number){
-    for(let i = 0; i <= map.length / 2; i++){
-        const srcRow = row - i;
-        const destRow = row + i - 1;
+function transpose(map: string[]){
+    const data: string[] = [];
+    for(let x = 0; x < map[0].length; x++){
+        let str = "";
 
-        if(srcRow < 0 || destRow >= map.length || srcRow == destRow){
-            continue;
+        for(const line of map){
+            str += line[x];
         }
 
-        if(!arraysEqual(map[srcRow], map[destRow])){
-            return false;
-        }
+        data.push(str);
     }
 
-    return true;
+    return data;
 }
 
-const input = getPuzzleInput(__dirname, "example.txt");
-const maps = splitMaps(input);
-
-let score = 0;
-
-for(const map of maps){
-    for(let i = 0; i <= map[0].length; i++){
-        if(hasVerticalReflection(map, i)){
-            score += i;
-            break;
-        }
+const maps = splitMaps(getPuzzleInput(__dirname));
+console.log(maps.reduce((acc, val) => {
+    const rows = getMirrorAccross(val);
+    if(rows){
+        return acc + (rows * 100);
+    }
     
-        if(hasHorizontalReflection(map, i)){
-            score += (100 * i);
-            break;
-        }
-    }
-}
-
-console.log(score);
+    const transposed = transpose(val);
+    return acc + (getMirrorAccross(transposed) ?? 0);
+}, 0));
