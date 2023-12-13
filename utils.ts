@@ -16,9 +16,9 @@ export function range(start: number, end: number): number[] {
     return arr;
 }
 
-export function fill<T>(size: number, defaultValue: T | null = null){
+export function fill<T>(size: number, defaultValue: T | null = null) {
     const arr = [];
-    for(let i = 0; i < size; i++){
+    for (let i = 0; i < size; i++) {
         arr.push(defaultValue);
     }
     return arr;
@@ -98,12 +98,12 @@ export function arrayHasSameValue<T>(array: T[], valueToCheck: T | undefined = u
     }
 
     const searchEl = array[0];
-    return  (valueToCheck == undefined || array[0] == valueToCheck) && !array.some(x => x != searchEl);
+    return (valueToCheck == undefined || array[0] == valueToCheck) && !array.some(x => x != searchEl);
 }
 
 export function columnHasSameValue<T>(grid: T[][], column: number = 0, valueToCheck: T | undefined = undefined) {
     const initValue = grid[0][column];
-    if(valueToCheck != undefined && initValue != valueToCheck){
+    if (valueToCheck != undefined && initValue != valueToCheck) {
         return false;
     }
 
@@ -116,12 +116,12 @@ export function columnHasSameValue<T>(grid: T[][], column: number = 0, valueToCh
     return true;
 }
 
-export function getBoolPermutations(size: number, isValidFn: (permutation: boolean[]) => boolean | null = null): boolean[][]{
+export function getBoolPermutations(size: number, isValidFn: ((permutation: boolean[]) => boolean) | null = null): boolean[][] {
     const permutations = [];
     const bits = fill(size, false);
-    for(let i = 0; i < (1 << size); i++){
+    for (let i = 0; i < (1 << size); i++) {
         const perm = [...bits];
-        if(!isValidFn || isValidFn(perm)){
+        if (!isValidFn || isValidFn(perm)) {
             permutations.push(perm);
         }
 
@@ -131,12 +131,12 @@ export function getBoolPermutations(size: number, isValidFn: (permutation: boole
     return permutations;
 }
 
-export function incrementBit(data: boolean[]){
-    for(let i = data.length - 1; i >= 0; i--){
+export function incrementBit(data: boolean[]) {
+    for (let i = data.length - 1; i >= 0; i--) {
         const result = !data[i];
         data[i] = result;
 
-        if(result){
+        if (result) {
             break;
         }
     }
@@ -144,25 +144,25 @@ export function incrementBit(data: boolean[]){
     return data;
 }
 
-export function replaceAt(string: string, index: number, replacement: string){
+export function replaceAt(string: string, index: number, replacement: string) {
     return string.substring(0, index) + replacement + string.substring(index + replacement.length);
 }
 
-export function arraysEqual<T>(left: T[], right: T[]){
-    if(left === right){
+export function arraysEqual<T>(left: T[], right: T[]) {
+    if (left === right) {
         return true;
     }
 
-    if(left == null || right == null){
+    if (left == null || right == null) {
         return false;
     }
 
-    if(left.length != right.length){
+    if (left.length != right.length) {
         return false;
     }
 
-    for(let i = 0; i < left.length; i++){
-        if(left[i] != right[i]){
+    for (let i = 0; i < left.length; i++) {
+        if (left[i] != right[i]) {
             return false;
         }
     }
@@ -170,8 +170,23 @@ export function arraysEqual<T>(left: T[], right: T[]){
     return true;
 }
 
-export function sleep(ms: number) : Promise<void>{
+export function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => {
-      setTimeout(resolve, ms);
+        setTimeout(resolve, ms);
     });
-  }
+}
+
+export function transpose(array: string[]) {
+    const data: string[] = [];
+    for (let x = 0; x < array[0].length; x++) {
+        let str = "";
+
+        for (const line of array) {
+            str += line[x];
+        }
+
+        data.push(str);
+    }
+
+    return data;
+}
