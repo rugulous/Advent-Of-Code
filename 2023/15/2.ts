@@ -35,7 +35,7 @@ function getLensInfo(instruction: string): LensData{
 
 function removeLens(box: number, label: string, replacmentFocalLength?: number): boolean{
     const pos = hashmap[box]?.findIndex((a: LensData) => a.label == label);
-    if(pos < 0){
+    if(pos === undefined || pos < 0){
         return false;
     }
 
@@ -94,7 +94,7 @@ function getLensPower(): number{
     return total;
 }
 
-const input = getPuzzleInput(__dirname, "example.txt")[0].split(",");
+const input = getPuzzleInput(__dirname)[0].split(",");
 const hashmap: {[key: number]: LensData[]} = {};
 
 input.forEach(processLens);
