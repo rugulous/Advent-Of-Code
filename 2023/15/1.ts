@@ -13,5 +13,5 @@ function hash(string: string){
     return value;
 }
 
-const input = getPuzzleInput(__dirname, "example.txt")[0].split(",");
+const input = getPuzzleInput(__dirname)[0].split(",");
 console.log(input.reduce((acc, val) => acc + hash(val), 0));
