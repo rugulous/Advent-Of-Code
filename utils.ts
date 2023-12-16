@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import { join } from "path";
-import { ILooseObject } from "./type";
+import { ILooseObject, Direction, Coordinate } from "./type";
 
 export function getPuzzleInput(dir: string, file = "input.txt"): string[] {
     const input = readFileSync(join(dir, file), "utf-8");
@@ -213,3 +213,10 @@ export function transpose<T>(array: T[][], reverse: boolean = false): T[][] {
     
     return data;
 }
+
+export const move: Record<Direction, (x: number, y: number, step?: number) => Coordinate> = {
+    "UP": (x, y, step = 1) => ({x, y: y - step}),
+    "DOWN": (x, y, step = 1) => ({x, y: y + step}),
+    "LEFT": (x, y, step = 1) => ({x: x - step, y}),
+    "RIGHT": (x, y, step = 1) => ({x: x + step, y})
+};
