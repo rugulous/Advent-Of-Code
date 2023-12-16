@@ -1,4 +1,4 @@
-import { getPuzzleInput, transpose } from "../../utils";
+import { getPuzzleInput, transposeStr } from "../../utils";
 
 function splitMaps(fullMap: string[]): string[][] {
     const maps: string[][] = [];
@@ -40,12 +40,12 @@ function getMirrorAccross(map: string[]): number | null{
 }
 
 const maps = splitMaps(getPuzzleInput(__dirname));
-console.log(maps.reduce((acc, val) => {
-    const rows = getMirrorAccross(val);
+console.log(maps.reduce((acc, map) => {
+    const rows = getMirrorAccross(map);
     if(rows){
         return acc + (rows * 100);
     }
     
-    const transposed = transpose(val);
+    const transposed = transposeStr(map);
     return acc + (getMirrorAccross(transposed) ?? 0);
 }, 0));

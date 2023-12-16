@@ -1,4 +1,4 @@
-import { getPuzzleInput, replaceAt, transpose } from "../../utils";
+import { getPuzzleInput, replaceAt, transposeStr } from "../../utils";
 
 function splitMaps(fullMap: string[]): string[][] {
     const maps: string[][] = [];
@@ -43,7 +43,7 @@ function getMirrorsAccross(map: string[]): number[]{
 
 const maps = splitMaps(getPuzzleInput(__dirname));
 console.log(maps.reduce((acc, map) => {
-    const transposed = transpose(map);
+    const transposed = transposeStr(map);
     const [rows, cols] = [getMirrorsAccross(map), getMirrorsAccross(transposed)];
 
     for(let y = 0; y < map.length; y++){
@@ -51,7 +51,7 @@ console.log(maps.reduce((acc, map) => {
         for(let x = 0; x < map[y].length; x++){
             copy[y] = replaceAt(map[y], x, map[y][x] == '#' ? "." : "#");
 
-            let [changedRows, changedCols] = [getMirrorsAccross(copy), getMirrorsAccross(transpose(copy))];
+            let [changedRows, changedCols] = [getMirrorsAccross(copy), getMirrorsAccross(transposeStr(copy))];
             changedRows = changedRows.filter(r => !rows.includes(r));
             changedCols = changedCols.filter(c => !cols.includes(c));
 

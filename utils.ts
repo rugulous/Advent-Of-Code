@@ -176,7 +176,7 @@ export function sleep(ms: number): Promise<void> {
     });
 }
 
-export function transpose(array: string[]) {
+export function transposeStr(array: string[], reverse: boolean = false) {
     const data: string[] = [];
     for (let x = 0; x < array[0].length; x++) {
         let str = "";
@@ -188,5 +188,28 @@ export function transpose(array: string[]) {
         data.push(str);
     }
 
+    if(reverse){
+        data.reverse();
+    }
+
+    return data;
+}
+
+export function transpose<T>(array: T[][], reverse: boolean = false): T[][] {
+    const data: T[][] = [];
+    for (let x = 0; x < array[0].length; x++) {
+        const inner = [];
+
+        for (const line of array) {
+            inner.push(line[x]);
+        }
+
+        data.push(inner);
+    }
+
+    if(reverse){
+        data.reverse();
+    }
+    
     return data;
 }
