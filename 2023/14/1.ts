@@ -12,7 +12,7 @@ function output(map: string[][]){
     }
 }
 
-const input = transpose(getPuzzleInput(__dirname, "example.txt").map(line => line.split("")), true);
+const input = transpose(getPuzzleInput(__dirname).map(line => line.split("")), true);
 
 for(const line of input){
     for(let x = 1; x < line.length; x++){
