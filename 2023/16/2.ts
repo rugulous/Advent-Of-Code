@@ -86,7 +86,7 @@ function tryRun(x: number, y: number, direction: Direction): number{
     return score;
 }
 
-const input = getPuzzleInput(__dirname, "example.txt");
+const input = getPuzzleInput(__dirname);
 let energized: boolean[][] = [];
 let splittersHit: ILooseObject = {};
 
