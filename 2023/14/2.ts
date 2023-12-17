@@ -1,14 +1,14 @@
 import { getPuzzleInput, rotate, transpose } from "../../utils";
 
-function output(map: string[][]){
-    for(const row of map){
+function output(map: string[][]) {
+    for (const row of map) {
         console.log(row.join(""));
     }
 
     console.log();
 }
 
-function doCycle(input: string[][]) {
+function tilt(input: string[][]) {
     input = transpose(input);
     for (const line of input) {
         for (let x = 1; x < line.length; x++) {
@@ -38,14 +38,36 @@ function doCycle(input: string[][]) {
     return transpose(input);
 }
 
-let input = getPuzzleInput(__dirname, "example.txt").map(line => line.split(""));
+function doCycle(input: string[][]) {
+    for (let i = 0; i < 4; i++) {
+        input = tilt(input);
+        input = rotate(input, true);
+    }
 
-for(let i = 0; i < 4; i++){
+    return input;
+}
+
+const encountered = {};
+
+let input = getPuzzleInput(__dirname, "example.txt").map(line => line.split(""));
+const totalRuns = 1_000_000_000;
+
+for(let i = 1; i < totalRuns; i++){
     input = doCycle(input);
-    output([...input]);
-    input = rotate(input, true);
+    const key = input.map(i => i.join("")).join("");
+    if (!encountered.hasOwnProperty(key)) {
+        encountered[key] = i;
+    } else if((totalRuns - i) % (i - encountered[key]) == 0){
+        console.log(`i: ${i}`);
+        console.log(`We saw this at run ${encountered[key]}`);
+        console.log(`${(totalRuns - i)} mod ${(i - encountered[key])} = 0!`);
+        break;
+    }
 }
 
 output(input);
 
-console.log(input.reduce((acc, val) => acc + val.reduce((a, v, i) => a + (v == 'O' ? val.length - i : 0), 0), 0));
+console.log(input.reduce((acc, val, line) => {
+    const score = input.length - line;
+    return acc + val.reduce((a, v) => a + (v == "O" ? score : 0), 0)
+}, 0));
