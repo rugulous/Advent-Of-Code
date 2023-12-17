@@ -223,7 +223,7 @@ export function rotate<T>(array: T[][], reverse: boolean = false): T[][]{
         if(reverse){
             inner.reverse();
         }
-        
+
         data.push(inner);
     }
 
@@ -234,9 +234,22 @@ export function rotate<T>(array: T[][], reverse: boolean = false): T[][]{
     return data;
 }
 
+export function isOutOfBounds(position: Coordinate, map: any[][] | string[]){
+    return ((position.x < 0 || position.x >= map[0].length) || (position.y < 0 || position.y >= map.length));
+}
+
 export const move: Record<Direction, (x: number, y: number, step?: number) => Coordinate> = {
     "UP": (x, y, step = 1) => ({x, y: y - step}),
     "DOWN": (x, y, step = 1) => ({x, y: y + step}),
     "LEFT": (x, y, step = 1) => ({x: x - step, y}),
     "RIGHT": (x, y, step = 1) => ({x: x + step, y})
 };
+
+export const mirroredMoves: Record<Direction, Direction> = {
+    "UP": "DOWN",
+    "DOWN": "UP",
+    "LEFT": "RIGHT",
+    "RIGHT": "LEFT"
+};
+
+export const allDirs: Direction[] = ["UP", "DOWN", "LEFT", "RIGHT"];

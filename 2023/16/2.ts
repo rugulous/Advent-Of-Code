@@ -1,5 +1,5 @@
 import { Coordinate, Direction, ILooseObject } from "../../type";
-import { getPuzzleInput, grid, move, sleep } from "../../utils";
+import { getPuzzleInput, grid, move, isOutOfBounds } from "../../utils";
 
 function travel(position: Coordinate, direction: Direction) {
     const mirror1: Record<Direction, Direction> = { "DOWN": "LEFT", "RIGHT": "UP", "UP": "RIGHT", "LEFT": "DOWN" };
@@ -8,8 +8,7 @@ function travel(position: Coordinate, direction: Direction) {
     let timeSinceEnergised = 0;
 
     while (true) {
-        if ((position.x < 0 || position.x >= input[0].length) || (position.y < 0 || position.y >= input.length)) { //|| (position.x == prevPosition.x && position.y == prevPosition.y)){
-            //we fell off the map :(
+        if(isOutOfBounds(position, input)){
             break;
         }
 
