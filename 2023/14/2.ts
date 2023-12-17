@@ -49,7 +49,7 @@ function doCycle(input: string[][]) {
 
 const encountered = {};
 
-let input = getPuzzleInput(__dirname, "example.txt").map(line => line.split(""));
+let input = getPuzzleInput(__dirname).map(line => line.split(""));
 const totalRuns = 1_000_000_000;
 
 for(let i = 1; i < totalRuns; i++){
