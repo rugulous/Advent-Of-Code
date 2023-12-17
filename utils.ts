@@ -195,7 +195,7 @@ export function transposeStr(array: string[], reverse: boolean = false) {
     return data;
 }
 
-export function transpose<T>(array: T[][], reverse: boolean = false): T[][] {
+export function transpose<T>(array: T[][]): T[][] {
     const data: T[][] = [];
     for (let x = 0; x < array[0].length; x++) {
         const inner = [];
@@ -206,11 +206,31 @@ export function transpose<T>(array: T[][], reverse: boolean = false): T[][] {
 
         data.push(inner);
     }
+    
+    return data;
+}
+
+export function rotate<T>(array: T[][], reverse: boolean = false): T[][]{
+    const data: T[][] = [];
+    
+    for(let x = array[0].length - 1; x >= 0; x--){
+        const inner = [];
+
+        for(let y = 0; y < array.length; y++){
+            inner.push(array[y][x]);
+        }
+
+        if(reverse){
+            inner.reverse();
+        }
+        
+        data.push(inner);
+    }
 
     if(reverse){
         data.reverse();
     }
-    
+
     return data;
 }
 
