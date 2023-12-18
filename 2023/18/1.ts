@@ -44,6 +44,25 @@ function extendGrid<T>(grid: T[][], width: number, height: number, defaultValue:
     return [xOffset, yOffset];
 }
 
+function fillInsides(map: boolean[][]){
+    for(let y = 0; y < map.length; y++){
+        let inside = false;
+        let prevEmpty = true;
+        for(let x = 0; x < map[y].length; x++){
+            if(map[y][x]){
+                if(prevEmpty){
+                    inside = !inside;
+                }
+                
+                prevEmpty = false;
+            } else {
+                map[y][x] = inside;
+                prevEmpty = true;
+            }
+        }
+    }
+}
+
 function output(map: boolean[][]) {
     for (const row of map) {
         console.log(row.map(l => l ? "#" : ".").join(""));
@@ -90,4 +109,8 @@ for(const instuction of instructions){
 }
 
 output(map);
+
+fillInsides(map);
+output(map);
+
 console.log(map.flat().reduce((acc, val) => acc + +val, 0));
