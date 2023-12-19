@@ -53,7 +53,7 @@ function processData(line: string): {x: number, m: number, a: number, s: number}
     return JSON.parse(line);
 }
 
-const input = getPuzzleInput(__dirname, "example.txt");
+const input = getPuzzleInput(__dirname);
 const [workflows, items] = parseInput(input);
 
 const accepted = [];
