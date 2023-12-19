@@ -1,6 +1,10 @@
 import { Coordinate, Direction } from "../../type";
-import { fill, getPuzzleInput, grid, isOutOfBounds, move } from "../../utils";
+import { getPuzzleInput, move } from "../../utils";
 
+type Instruction = {
+    direction: Direction,
+    number: number
+};
 
 function mapDirection(shortDir: string): Direction{
     if(shortDir == "U"){
@@ -18,7 +22,7 @@ function mapDirection(shortDir: string): Direction{
     return "RIGHT";
 }
 
-function parseInstructions(line: string){
+function parseInstructions(line: string): Instruction{
     const [rawDir, rawNum] = line.split(" ");
     return {
         direction: mapDirection(rawDir),
@@ -26,91 +30,29 @@ function parseInstructions(line: string){
     };
 }
 
-function extendGrid<T>(grid: T[][], width: number, height: number, defaultValue: T | null = null){
-    let yOffset = 0;
-    while(grid.length <= height){
-        grid.push(fill(grid[0].length, defaultValue));
-        yOffset++;
+function getArea(instructions: Instruction[]){
+    let currPos: Coordinate = {x: 0, y: 0};
+    let perimeter = 0;
+    const points = [currPos];
+
+    for(const instruction of instructions){
+        currPos = move[instruction.direction](currPos.x, currPos.y, instruction.number);
+        points.push(currPos);
+        perimeter += instruction.number;
     }
 
-    let xOffset = 0;
-    while(grid[0].length <= width){
-        for(const row of grid){
-            row.push(defaultValue);
-        }
-        xOffset++;
-    }
-
-    return [xOffset, yOffset];
+    return shoelaceArea(points) + perimeter / 2 + 1;
 }
 
-function fillInsides(map: boolean[][]){
-    for(let y = 0; y < map.length; y++){
-        let inside = false;
-        let prevEmpty = true;
-        for(let x = 0; x < map[y].length; x++){
-            if(map[y][x]){
-                if(prevEmpty){
-                    inside = !inside;
-                }
-                
-                prevEmpty = false;
-            } else {
-                map[y][x] = inside;
-                prevEmpty = true;
-            }
-        }
-    }
-}
-
-function output(map: boolean[][]) {
-    for (const row of map) {
-        console.log(row.map(l => l ? "#" : ".").join(""));
+function shoelaceArea(coordinates: Coordinate[]){
+    let area = 0;
+    
+    for(let i = 0; i < coordinates.length - 1; i++){
+        area += coordinates[i].x * coordinates[i + 1].y - coordinates[i + 1].x * coordinates[i].y;
     }
 
-    console.log();
+    return Math.abs(area + coordinates[coordinates.length - 1].x * coordinates[0].y - coordinates[0].x * coordinates[coordinates.length - 1].y) / 2;
 }
 
 const instructions = getPuzzleInput(__dirname, "example.txt").map(l => parseInstructions(l));
-const map = grid(1, false, 1);
-
-let position: Coordinate = {x: 0, y: 0};
-
-for(const instuction of instructions){
-    console.log();
-    console.log(position);
-    console.log(instuction);
-    const newPosition = move[instuction.direction](position.x, position.y, instuction.number);
-    console.log(newPosition);
-
-    if(isOutOfBounds(newPosition, map)){
-        extendGrid(map, newPosition.x, newPosition.y, false);
-    }
-
-    if(newPosition.x != position.x){
-        const minX = Math.min(position.x, newPosition.x);
-        const maxX = Math.max(position.x, newPosition.x);
-
-        for(let x = minX; x <= maxX; x++){
-            map[position.y][x] = true;
-        }
-    }
-
-    if(newPosition.y != position.y){
-        const minY = Math.min(position.y, newPosition.y);
-        const maxY = Math.max(position.y, newPosition.y);
-
-        for(let y = minY; y <= maxY; y++){
-            map[y][position.x] = true;
-        }
-    }
-
-    position = newPosition;
-}
-
-output(map);
-
-fillInsides(map);
-output(map);
-
-console.log(map.flat().reduce((acc, val) => acc + +val, 0));
+console.log(getArea(instructions));
