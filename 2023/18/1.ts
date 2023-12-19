@@ -54,5 +54,5 @@ function shoelaceArea(coordinates: Coordinate[]){
     return Math.abs(area + coordinates[coordinates.length - 1].x * coordinates[0].y - coordinates[0].x * coordinates[coordinates.length - 1].y) / 2;
 }
 
-const instructions = getPuzzleInput(__dirname, "example.txt").map(l => parseInstructions(l));
+const instructions = getPuzzleInput(__dirname).map(l => parseInstructions(l));
 console.log(getArea(instructions));
