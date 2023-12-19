@@ -44,6 +44,8 @@ function aStar(maze: number[][], start: Coordinate, end: Coordinate): Coordinate
     const openList = [startNode];
     const closedList = [];
 
+    setInterval(() => console.log(closedList), 5000);
+
     while(openList.length > 0){
         openList.sort((a, b) => a.f - b.f);
         const currentNode = openList.shift();
@@ -88,7 +90,7 @@ function aStar(maze: number[][], start: Coordinate, end: Coordinate): Coordinate
     throw new Error('Unable to solve!');
 }
 
-const maze = getPuzzleInput(__dirname, "example.txt").map(l => l.split("").map(c => parseInt(c)));
+const maze = getPuzzleInput(__dirname).map(l => l.split("").map(c => parseInt(c)));
 const path = aStar(maze, {x: 0, y: 0}, {x: maze[0].length - 1, y: maze.length - 1});
 path.shift(); //don't incurr the points for the first square
 
