@@ -1,5 +1,5 @@
 import { ILooseObject } from "../../type";
-import { getPuzzleInput } from "../../utils";
+import { getPuzzleInput, leastCommonMultiple } from "../../utils";
 
 interface Node {
     connections: string[];
@@ -83,8 +83,6 @@ function setInputs(){
 
 function pressButton(){
     const commands: Command[] = [];
-
-    pulseCount.false++;
     
     for(const destination of broadcaster){
         commands.push({
@@ -97,16 +95,13 @@ function pressButton(){
     while(commands.length > 0){
         const currCommand = commands.shift();
 
-        if(currCommand.pulse){
-            pulseCount.true++;
-        } else {
-            pulseCount.false++;
-        }
-
         const destNode = nodes[currCommand.destination];
-
         if(destNode === undefined){
             continue;
+        }
+        
+        if(lowestParents.hasOwnProperty(currCommand.destination) && !currCommand.pulse){
+            lowestParents[currCommand.destination] = pressCount;
         }
 
         const result = destNode.receivePulse(currCommand.source, currCommand.pulse);
@@ -126,19 +121,30 @@ function pressButton(){
 const nodes: {[key: string]: Node} = {};
 const broadcaster = [];
 const connections: ILooseObject = {};
-const pulseCount: {
-    true: number,
-    false: number
-} = {
-    true: 0,
-    false: 0
-};
+const lowestParents = {
+    "ss": null,
+    "fh": null,
+    "mf": null,
+    "fz": null
+}
 
 getPuzzleInput(__dirname).forEach(parseInput);
 setInputs();
 
-for(let i = 0; i < 1000; i++){
-    pressButton();
-}
+let pressCount = 0;
+while(true){
+    if(pressCount % 100000 == 0){
+        console.log(`Press ${pressCount}`);
+    }
 
-console.log(pulseCount.true * pulseCount.false);
+    pressCount++;
+    pressButton();
+
+    if(Object.keys(lowestParents).some(key => !lowestParents[key])){
+        continue;
+    }
+
+    console.log(lowestParents);
+    console.log(leastCommonMultiple(Object.values(lowestParents)));
+    break;
+}
