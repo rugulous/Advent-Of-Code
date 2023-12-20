@@ -84,7 +84,7 @@ function setInputs(){
 function pressButton(){
     const commands: Command[] = [];
 
-    console.log("button -low-> broadcaster");
+    //console.log("button -low-> broadcaster");
     pulseCount.false++;
     
     for(const destination of broadcaster){
@@ -104,12 +104,12 @@ function pressButton(){
             pulseCount.false++;
         }
 
-        console.log(`${currCommand.source} -${currCommand.pulse ? 'high' : 'low'}-> ${currCommand.destination}`);
+        //console.log(`${currCommand.source} -${currCommand.pulse ? 'high' : 'low'}-> ${currCommand.destination}`);
 
         const destNode = nodes[currCommand.destination];
 
         if(destNode === undefined){
-            console.log(`Hit testing module ${currCommand.destination}`);
+            //console.log(`Hit testing module ${currCommand.destination}`);
             continue;
         }
 
@@ -138,7 +138,7 @@ const pulseCount: {
     false: 0
 };
 
-getPuzzleInput(__dirname, "example-2.txt").forEach(parseInput);
+getPuzzleInput(__dirname).forEach(parseInput);
 setInputs();
 
 for(let i = 0; i < 1000; i++){
