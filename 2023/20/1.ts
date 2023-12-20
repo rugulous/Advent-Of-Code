@@ -107,6 +107,12 @@ function pressButton(){
         console.log(`${currCommand.source} -${currCommand.pulse ? 'high' : 'low'}-> ${currCommand.destination}`);
 
         const destNode = nodes[currCommand.destination];
+
+        if(destNode === undefined){
+            console.log(`Hit testing module ${currCommand.destination}`);
+            continue;
+        }
+
         const result = destNode.receivePulse(currCommand.source, currCommand.pulse);
 
         if(result === undefined){
@@ -132,7 +138,7 @@ const pulseCount: {
     false: 0
 };
 
-getPuzzleInput(__dirname, "example.txt").forEach(parseInput);
+getPuzzleInput(__dirname, "example-2.txt").forEach(parseInput);
 setInputs();
 
 for(let i = 0; i < 1000; i++){
