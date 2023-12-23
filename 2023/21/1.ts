@@ -74,15 +74,21 @@ function calculateAllSteps(map: boolean[][], currentPositions: Coordinate[]){
 
     for(let i = 0; i < startingPositions; i++){
         const coord = currentPositions.shift();
-        currentPositions.push(...doStep(map, coord));
+        const results = doStep(map, coord);
+
+        for(const res of results){
+        if(!currentPositions.some(p => p.x == res.x && p.y == res.y))
+        
+        currentPositions.push(res);
+        }
     }
 }
 
-const [start, map] = parseInput(getPuzzleInput(__dirname, "example.txt"));
+const [start, map] = parseInput(getPuzzleInput(__dirname));
 const coords = [start];
 
-for(let i = 0; i < 6; i++){
-    output(map, coords);
+for(let i = 0; i < 64; i++){
+    //output(map, coords);
     calculateAllSteps(map, coords);
 }
 
