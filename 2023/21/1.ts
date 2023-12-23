@@ -1,7 +1,9 @@
 import { Coordinate } from "../../type";
 import { allDirs, getPuzzleInput, grid, isOutOfBounds, move } from "../../utils";
 
-function coordsToMap(coords: Coordinate[]): { [key: number]: { [key: number]: number } } {
+function coordsToMap(coords: Coordinate[]): [{ [key: number]: { [key: number]: number } }, number] {
+    let unique = 0;
+
     const visited = {};
     for (const c of coords) {
         if (!visited.hasOwnProperty(c.y)) {
@@ -10,16 +12,17 @@ function coordsToMap(coords: Coordinate[]): { [key: number]: { [key: number]: nu
 
         if (!visited[c.y].hasOwnProperty(c.x)) {
             visited[c.y][c.x] = 0;
+            unique++;
         }
 
         visited[c.y][c.x]++;
     }
 
-    return visited;
+    return [visited, unique];
 }
 
 function output(map: boolean[][], coords: Coordinate[]) {
-    const visited = coordsToMap(coords);
+    const [visited, unique] = coordsToMap(coords);
 
     for (let y = 0; y < map.length; y++) {
         console.log(map[y].map((v, x) => {
@@ -31,6 +34,8 @@ function output(map: boolean[][], coords: Coordinate[]) {
         }).join(""));
     }
 
+    console.log();
+    console.log(`Unique: ${unique}`);
     console.log();
 }
 
