@@ -63,6 +63,10 @@ export function countOccurrences(string: string, char: string) {
     return string.split(char).length - 1;
 }
 
+export function countOccurrencesInArray<T>(array: T[], search: T) {
+    return array.filter(x => x == search).length;
+}
+
 export function shuffle<T>(array: T[]): T[] {
     const out = []
 

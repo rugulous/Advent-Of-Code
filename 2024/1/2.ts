@@ -1,4 +1,4 @@
-import {countOccurrences, getPuzzleInput} from "../../utils";
+import {countOccurrencesInArray, getPuzzleInput} from "../../utils";
 
 const left: number[] = [];
 const right: number[] = [];
@@ -11,11 +11,10 @@ getPuzzleInput(__dirname).forEach(line => {
 
 const found = {};
 let total = 0;
-const strRight = right.join("--");
 
 left.forEach(num => {
     if(!found.hasOwnProperty(num)){
-        found[num] = num * countOccurrences(strRight, num.toString());
+        found[num] = num * countOccurrencesInArray(right, num);
     }
 
     total += found[num];
