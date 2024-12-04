@@ -3,6 +3,16 @@ import { getPuzzleInput } from "../../utils";
 const wordsearch = getPuzzleInput(__dirname);
 
 const TARGET_WORD = "MAS"; //remove the "X" because we're explicitly finding all of those
+const SEARCH_DIRECTIONS = [
+    [0, 1],   // forward
+    [0, -1],  // backward
+    [-1, 0],  // up
+    [1, 0],   // down
+    [-1, -1], // diag-l-up
+    [1, -1],  // diag-l-down
+    [1, 1],   // diag-r-down
+    [-1, 1],  // diag-r-up
+]
 
 function doesSpellWord(...letters: string[]) {
     return letters.join("") == TARGET_WORD;
@@ -18,58 +28,20 @@ for (let y = 0; y < wordsearch.length; y++) {
 
         console.log(`Found 'X' at (${y}, ${x})`);
 
-        if (x < wordsearch[y].length - 3) {
-            //forward
-            if (doesSpellWord(wordsearch[y][x + 1], wordsearch[y][x + 2], wordsearch[y][x + 3])) {
-                found++;
-            }
-        }
+        for(const [moveX, moveY] of SEARCH_DIRECTIONS){
+            const maxX = x + (moveX * 3);
+            const maxY = y + (moveY * 3);
 
-        if (x >= 3) {
-            //backward
-            if (doesSpellWord(wordsearch[y][x - 1], wordsearch[y][x - 2], wordsearch[y][x - 3])) {
-                found++;
+            if(maxY < 0 || maxY >= wordsearch.length || maxX < 0 || maxX >= wordsearch[y].length){
+                continue;
             }
-        }
 
-        if (y >= 3) {
-            //up
-            if (doesSpellWord(wordsearch[y - 1][x], wordsearch[y - 2][x], wordsearch[y - 3][x])) {
-                found++;
+            const letters = [];
+            for(let i = 1; i < 4; i++){
+                letters.push(wordsearch[y + (moveY * i)][x + (moveX * i)]);
             }
-        }
 
-        if (y < wordsearch.length - 3) {
-            //down
-            if (doesSpellWord(wordsearch[y + 1][x], wordsearch[y + 2][x], wordsearch[y + 3][x])) {
-                found++;
-            }
-        }
-
-        if (x >= 3 && y >= 3) {
-            //diag-l-up
-            if (doesSpellWord(wordsearch[y - 1][x - 1], wordsearch[y - 2][x - 2], wordsearch[y - 3][x - 3])) {
-                found++;
-            }
-        }
-
-        if (x >= 3 && y < wordsearch.length - 3) {
-            //diag-l-down
-            if (doesSpellWord(wordsearch[y + 1][x - 1], wordsearch[y + 2][x - 2], wordsearch[y + 3][x - 3])) {
-                found++;
-            }
-        }
-
-        if (x < wordsearch[y].length - 3 && y < wordsearch.length - 3) {
-            //diag-r-down
-            if (doesSpellWord(wordsearch[y + 1][x + 1], wordsearch[y + 2][x + 2], wordsearch[y + 3][x + 3])) {
-                found++;
-            }
-        }
-
-        if (y >= 3 && x < wordsearch.length - 3) {
-            //diag-r-up
-            if (doesSpellWord(wordsearch[y - 1][x + 1], wordsearch[y - 2][x + 2], wordsearch[y - 3][x + 3])) {
+            if(doesSpellWord(...letters)){
                 found++;
             }
         }
