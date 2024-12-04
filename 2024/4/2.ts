@@ -10,19 +10,19 @@ for (let y = 1; y < wordsearch.length - 1; y++) {
         }
 
         console.log(`Found 'A' at (${y}, ${x})`);
-        const letters = [wordsearch[y - 1][x - 1], wordsearch[y - 1][x + 1], wordsearch[y + 1][x + 1], wordsearch[y + 1][x - 1]];
-        
-        if(!arraysEqual(letters.toSorted(), ['M', 'M', 'S', 'S'])){
-            continue;
-        }
+        const diagonals = [
+            wordsearch[y - 1][x - 1], //Top-Left
+            wordsearch[y - 1][x + 1], //Top-Right
+            wordsearch[y + 1][x + 1], //Bottom Right
+            wordsearch[y + 1][x - 1]  //Bottom-Left
+        ];
 
-        //we now know we have the 2 x M and 2 x S required, but are they in the correct configuration?
-        //they need to be "next to" each other - either both horizontally or both vertically
-        if(letters[0] == letters[2]){
-            continue;
+        if (
+            arraysEqual(diagonals.toSorted((a, b) => a.localeCompare(b)), ['M', 'M', 'S', 'S']) && //do we have the required letters?
+            diagonals[0] !== diagonals[2] //are they in the correct configuration?
+        ) {
+            found++;
         }
-
-        found++;
     }
 }
 
