@@ -256,6 +256,13 @@ export const mirroredMoves: Record<Direction, Direction> = {
     "RIGHT": "LEFT"
 };
 
+export const rotatedMoves: Record<Direction, Direction> = {
+    "UP": "RIGHT",
+    "DOWN": "LEFT",
+    "LEFT": "UP",
+    "RIGHT": "DOWN"
+}
+
 export const allDirs: Direction[] = ["UP", "DOWN", "LEFT", "RIGHT"];
 
 export const betweenInclusive = (x: number, min: number, max: number) => x >= min && x <= max;
