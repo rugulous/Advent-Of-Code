@@ -24,11 +24,7 @@ for(const char of input){
 let swapEnd = memory.length - 1;
 let swapStart = 0;
 
-while(true){
-    if(swapEnd <= swapStart){
-        break;
-    }
-    
+while(swapEnd > swapStart){
     if(memory[swapEnd] == "."){
         swapEnd--;
         continue;
