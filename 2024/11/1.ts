@@ -24,10 +24,8 @@ let input = getPuzzleInput(__dirname)[0].split(" ").map(x => parseInt(x));
 
 for (let i = 0; i < 25; i++) {
     let results = [];
-    //console.log(`Iteration ${i}`);
 
     for (const num of input) {
-        //console.log(`Found ${num}`);
 
         for (const rule of rules) {
             if (!rule.applies(num)) {
@@ -35,14 +33,12 @@ for (let i = 0; i < 25; i++) {
             }
 
             const output = rule.execute(num);
-            //console.log('Rule execution yields ', output)
             results.push(...output);
             break;
         }
     }
 
     input = results;
-    //console.log(`Input is now ${input.length} long`);
 }
 
 console.log(input.length);
