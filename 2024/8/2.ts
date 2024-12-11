@@ -48,18 +48,17 @@ Object.keys(foundLetters).forEach(k => {
     }
 });
 
-if (true) {
-    for (let y = 0; y < input.length; y++) {
-        let line = "";
-        for (let x = 0; x < input[y].length; x++) {
-            if (antinodes[y][x]) {
-                line += "#";
-            } else {
-                line += input[y][x];
-            }
-        }
-        console.log(line);
-    }
 
-    console.log(antinodes.flat().filter(x => x).length);
+for (let y = 0; y < input.length; y++) {
+    let line = "";
+    for (let x = 0; x < input[y].length; x++) {
+        if (antinodes[y][x]) {
+            line += "#";
+        } else {
+            line += input[y][x];
+        }
+    }
+    console.log(line);
 }
+
+console.log(antinodes.flat().filter(x => x).length);
