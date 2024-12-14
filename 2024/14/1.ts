@@ -2,10 +2,10 @@ import { getPuzzleInput } from "../../utils";
 
 const regex = /p=(\d*),(\d*) v=([-]?\d*),([-]?\d*)/;
 
-const WIDTH = 11;
-const HEIGHT = 7;
+const WIDTH = 101;
+const HEIGHT = 103;
 
-const robots = getPuzzleInput(__dirname, "example.txt").map(x => {
+const robots = getPuzzleInput(__dirname).map(x => {
    const [, px, py, vx, vy] = regex.exec(x).map(x => parseInt(x));
 
    return {
