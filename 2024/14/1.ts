@@ -1,6 +1,6 @@
 import { getPuzzleInput } from "../../utils";
 
-const regex = /p=(\d*),(\d*) v=([-]?\d*),([-]?\d*)/;
+const regex = /p=(\d*),(\d*) v=(-?\d*),(-?\d*)/;
 
 const WIDTH = 101;
 const HEIGHT = 103;
