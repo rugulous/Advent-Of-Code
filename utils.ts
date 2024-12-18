@@ -286,3 +286,38 @@ export function getPermutations<T>(inputArr: T[]) {
 
     return result;
 }
+
+
+class NodePos {
+    coordinate: Coordinate;
+    distance: number;
+
+    constructor(coord: Coordinate, dist: number){
+        this.coordinate = coord;
+        this.distance = dist;
+    }
+}
+
+export function findShortestPath(map: boolean[][], startPos: Coordinate, destination: Coordinate){    
+    const visited = grid(map[0].length, false, map.length);
+    const queue = [new NodePos(startPos, 0)];
+
+    while(queue.length > 0){
+        const curr = queue.shift();
+
+        if(curr.coordinate.x == destination.x && curr.coordinate.y == destination.y){
+            return curr.distance;
+        }
+
+        for(const dir of allDirs){
+            const pos = move[dir](curr.coordinate.x, curr.coordinate.y);
+
+            if(!isOutOfBounds(pos, map) && map[pos.y][pos.x] && !visited[pos.y][pos.x]){
+                visited[pos.y][pos.x] = true;
+                queue.push(new NodePos(pos, curr.distance + 1));
+            }
+        }
+    }
+
+    return -1;
+}
