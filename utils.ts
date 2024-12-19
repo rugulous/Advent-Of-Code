@@ -298,12 +298,12 @@ class NodePos {
     }
 }
 
-export function findShortestPath(map: boolean[][], startPos: Coordinate, destination: Coordinate){    
+export function findShortestPath(map: boolean[][], startPos: Coordinate, destination: Coordinate, sortFn = (_, ) => 1){    
     const visited = grid(map[0].length, false, map.length);
-    const queue = [new NodePos(startPos, 0)];
+    const queue = new PriorityQueue(sortFn, [new NodePos(startPos, 0)]);
 
-    while(queue.length > 0){
-        const curr = queue.shift();
+    while(!queue.isEmpty()){
+        const curr = queue.getNext();
 
         if(curr.coordinate.x == destination.x && curr.coordinate.y == destination.y){
             return curr.distance;
@@ -314,10 +314,44 @@ export function findShortestPath(map: boolean[][], startPos: Coordinate, destina
 
             if(!isOutOfBounds(pos, map) && map[pos.y][pos.x] && !visited[pos.y][pos.x]){
                 visited[pos.y][pos.x] = true;
-                queue.push(new NodePos(pos, curr.distance + 1));
+                queue.add(new NodePos(pos, curr.distance + 1));
             }
         }
     }
 
     return -1;
+}
+
+class PriorityQueue<T> {
+    private readonly data: T[] = [];
+    private readonly sortFn: (a: T, b: T) => number
+    
+    constructor(sort: (a: T, b: T) => number, startingData: T[] = []){
+        this.sortFn = sort;
+        this.data = startingData.toSorted(this.sortFn);
+    }
+
+    add(newItem: T){
+        let low = 0;
+        let high = this.data.length;
+
+        while(low < high){
+            const mid = Math.floor((low + high) / 2);
+            if(this.sortFn(newItem, this.data[mid]) < 0){
+                high = mid;
+            } else {
+                low = mid + 1;
+            }
+        }
+
+        this.data.splice(low, 0, newItem);
+    }
+
+    getNext(): T {
+        return this.data.shift();
+    }
+
+    isEmpty(): boolean {
+        return this.data.length == 0;
+    }
 }
