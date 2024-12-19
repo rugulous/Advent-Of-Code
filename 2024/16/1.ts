@@ -1,5 +1,5 @@
 import { Direction } from "../../type";
-import { findShortestPath, getPuzzleInput, inputMap, outputMap, rotatedMoves } from "../../utils";
+import { findShortestPath, getPuzzleInput, inputMap, manhattanDistance, rotatedMoves } from "../../utils";
 
 let startPos = null;
 let endPos = null;
@@ -19,7 +19,7 @@ function getTotalRotations(prevDir: Direction, currDir: Direction){
     return rotations;
 }
 
-const map = inputMap(getPuzzleInput(__dirname, "example.txt"), (char, x, y) => {
+const map = inputMap(getPuzzleInput(__dirname), (char, x, y) => {
     if(char == "S"){
         startPos = {x,y};
     } else if(char == "E"){
@@ -31,7 +31,19 @@ const map = inputMap(getPuzzleInput(__dirname, "example.txt"), (char, x, y) => {
     return true;
 });
 
-console.log(startPos);
-console.log(endPos);
-const end = findShortestPath(map, startPos, endPos, (from, to, prevDir, currDir) => 1 + (getTotalRotations(prevDir, currDir) * 1000));
+const end = findShortestPath(map, startPos, endPos, (from, to, prevDir, currDir) => 1 + (getTotalRotations(prevDir, currDir) * 1000), (curr, end) => {
+    const distance = manhattanDistance(curr, end);
+    let rotations = 0;
+
+    //do we need to rotate at any point?
+    if(curr.x != end.x){
+        rotations++;
+    }
+
+    if(curr.y != end.y){
+        rotations++;
+    }
+
+    return distance + (rotations * 1000);
+});
 console.log(end);
