@@ -294,22 +294,24 @@ class NodePos {
     heuristic: number = 0;
     estimatedCost: number = 0;
     parent: NodePos | null = null;
+    direction: Direction;
 
-    constructor(coord: Coordinate, dToStart: number, score: number, parent: NodePos | null){
+    constructor(coord: Coordinate, dToStart: number, score: number, parent: NodePos | null, direction: Direction){
         this.coordinate = coord;
         this.distanceToStart = dToStart;
         this.heuristic = score;
         this.estimatedCost = score + dToStart;
         this.parent = parent;
+        this.direction = direction;
     }
 }
 
-function manhattanDistance(curr: Coordinate, destination: Coordinate){
+export function manhattanDistance(curr: Coordinate, destination: Coordinate){
     return Math.abs(curr.x - destination.x) + Math.abs(curr.y - destination.y)
 }
 
-export function findShortestPath(map: boolean[][], startPos: Coordinate, endPos: Coordinate, heuristicFn: (currNode: Coordinate, destination: Coordinate) => number = manhattanDistance, movementFn: (from: Coordinate, to: Coordinate) => number = (_,) => 1){
-    const queue = new PriorityQueue((a,b) => a.estimatedCost - b.estimatedCost, [new NodePos(startPos, 0, heuristicFn(startPos, endPos), null)]);
+export function findShortestPath(map: boolean[][], startPos: Coordinate, endPos: Coordinate, movementFn: (from: Coordinate, to: Coordinate, prevDir: Direction, currDir: Direction) => number = () => 1, heuristicFn: (currNode: Coordinate, destination: Coordinate) => number = manhattanDistance){
+    const queue = new PriorityQueue((a,b) => a.estimatedCost - b.estimatedCost, [new NodePos(startPos, 0, heuristicFn(startPos, endPos), null, "RIGHT")]);
     const closedList = new Set<string>();
 
     while(!queue.isEmpty()){
@@ -322,7 +324,7 @@ export function findShortestPath(map: boolean[][], startPos: Coordinate, endPos:
 
         for(const dir of allDirs){
             const pos = move[dir](curr.coordinate.x, curr.coordinate.y);
-            let distance = curr.distanceToStart + movementFn(curr.coordinate, pos);
+            let distance = curr.distanceToStart + movementFn(curr.coordinate, pos, curr.direction, dir);
 
             if(isOutOfBounds(pos, map) || !map[pos.y][pos.x] || closedList.has(`${pos.x},${pos.y}`)){
                 continue;
@@ -331,7 +333,7 @@ export function findShortestPath(map: boolean[][], startPos: Coordinate, endPos:
             let {index, element} = queue.find(x => x.coordinate.x == pos.x && x.coordinate.y == pos.y);
 
             if(!element){
-                element = new NodePos(pos, distance, heuristicFn(pos, endPos), curr);
+                element = new NodePos(pos, distance, heuristicFn(pos, endPos), curr, dir);
                 queue.add(element);
             } else if(distance < element.distanceToStart){
                 queue.removeAt(index);
@@ -412,7 +414,25 @@ export function outputMap(map: boolean[][]){
         let line = "";
 
         for(let x = 0; x < map[y].length; x++){
-            line += map[y][x]
+            line += map[y][x] ? "." : "#";
+        }
+
+        console.log(line);
+    }
+}
+
+export function inputMap(lines: string[], exceptionCallback: (char: string, x: number, y: number) => boolean = (_char,_x,_y) => false){
+    const map = grid(lines[0].length, false, lines.length);
+
+    for(let y = 0; y < lines.length; y++){
+        for(let x = 0; x < lines[y].length; x++){
+            if(lines[y][x] == "."){
+                map[y][x] = true;
+            } else if(lines[y][x] != "#"){
+                map[y][x] = exceptionCallback(lines[y][x], x, y);
+            }
         }
     }
+
+    return map;
 }
