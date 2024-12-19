@@ -290,31 +290,50 @@ export function getPermutations<T>(inputArr: T[]) {
 
 class NodePos {
     coordinate: Coordinate;
-    distance: number;
+    distanceToStart: number = 0;
+    heuristic: number = 0;
+    estimatedCost: number = 0;
 
-    constructor(coord: Coordinate, dist: number){
+    constructor(coord: Coordinate){
         this.coordinate = coord;
-        this.distance = dist;
     }
 }
 
-export function findShortestPath(map: boolean[][], startPos: Coordinate, destination: Coordinate, sortFn = (_, ) => 1){    
-    const visited = grid(map[0].length, false, map.length);
-    const queue = new PriorityQueue(sortFn, [new NodePos(startPos, 0)]);
+export function findShortestPath(map: boolean[][], startPos: Coordinate, destination: Coordinate, weightFn: (currPos: Coordinate, endPos: Coordinate) => number = (_, ) => 1, sortFn: (a: NodePos, b: NodePos) => number = (a, b) => a.estimatedCost - b.estimatedCost){    
+    const closedList = [];
+    const queue = new PriorityQueue<NodePos>(sortFn, [new NodePos(startPos)]);
 
     while(!queue.isEmpty()){
         const curr = queue.getNext();
+        closedList.push(curr);
 
         if(curr.coordinate.x == destination.x && curr.coordinate.y == destination.y){
-            return curr.distance;
+            return curr.distanceToStart;
         }
 
         for(const dir of allDirs){
             const pos = move[dir](curr.coordinate.x, curr.coordinate.y);
+            const searchFn = (x: NodePos) => x.coordinate.x == pos.x && x.coordinate.y == pos.y;
 
-            if(!isOutOfBounds(pos, map) && map[pos.y][pos.x] && !visited[pos.y][pos.x]){
-                visited[pos.y][pos.x] = true;
-                queue.add(new NodePos(pos, curr.distance + 1));
+            if(isOutOfBounds(pos, map) || !map[pos.y][pos.x] || closedList.find(searchFn)){
+                continue;
+            }
+
+            let neighbour = new NodePos(pos);
+            let distance = curr.distanceToStart + 1;
+            let bestScore = false;
+
+            if(!queue.find(searchFn)){
+                bestScore = true;
+                neighbour.heuristic = weightFn(neighbour.coordinate, destination);
+                queue.add(neighbour);
+            } else if(distance < neighbour.distanceToStart){
+                bestScore = true;
+            }
+
+            if(bestScore){
+                neighbour.distanceToStart = distance;
+                neighbour.estimatedCost = neighbour.distanceToStart + neighbour.heuristic;
             }
         }
     }
@@ -353,5 +372,9 @@ class PriorityQueue<T> {
 
     isEmpty(): boolean {
         return this.data.length == 0;
+    }
+
+    find(predicate: (x: T) => boolean){
+        return this.data.find(predicate);
     }
 }
