@@ -11,5 +11,6 @@ getPuzzleInput(__dirname).slice(0, NUM_TO_PROCESS).forEach(line => {
 });
 
 
-const minDist = findShortestPath(map, {x: 0, y: 0}, {x: TARGET_SIZE - 1, y: TARGET_SIZE - 1}); //start at top left corner and work to bottom right
+const minDist = findShortestPath(map, {x: 0, y: 0}, {x: TARGET_SIZE - 1, y: TARGET_SIZE - 1}).distanceToStart; //start at top left corner and work to bottom right
+
 console.log(minDist);

@@ -293,52 +293,59 @@ class NodePos {
     distanceToStart: number = 0;
     heuristic: number = 0;
     estimatedCost: number = 0;
+    parent: NodePos | null = null;
 
-    constructor(coord: Coordinate){
+    constructor(coord: Coordinate, dToStart: number, score: number, parent: NodePos | null){
         this.coordinate = coord;
+        this.distanceToStart = dToStart;
+        this.heuristic = score;
+        this.estimatedCost = score + dToStart;
+        this.parent = parent;
     }
 }
 
-export function findShortestPath(map: boolean[][], startPos: Coordinate, destination: Coordinate, weightFn: (currPos: Coordinate, endPos: Coordinate) => number = (_, ) => 1, sortFn: (a: NodePos, b: NodePos) => number = (a, b) => a.estimatedCost - b.estimatedCost){    
-    const closedList = [];
-    const queue = new PriorityQueue<NodePos>(sortFn, [new NodePos(startPos)]);
+function manhattanDistance(curr: Coordinate, destination: Coordinate){
+    return Math.abs(curr.x - destination.x) + Math.abs(curr.y - destination.y)
+}
+
+export function findShortestPath(map: boolean[][], startPos: Coordinate, endPos: Coordinate, heuristicFn: (currNode: Coordinate, destination: Coordinate) => number = manhattanDistance, movementFn: (from: Coordinate, to: Coordinate) => number = (_,) => 1){
+    const queue = new PriorityQueue((a,b) => a.estimatedCost - b.estimatedCost, [new NodePos(startPos, 0, heuristicFn(startPos, endPos), null)]);
+    const closedList = new Set<string>();
 
     while(!queue.isEmpty()){
         const curr = queue.getNext();
-        closedList.push(curr);
+        closedList.add(`${curr.coordinate.x},${curr.coordinate.y}`);
 
-        if(curr.coordinate.x == destination.x && curr.coordinate.y == destination.y){
-            return curr.distanceToStart;
+        if(curr.coordinate.x == endPos.x && curr.coordinate.y == endPos.y){
+            return curr;
         }
 
         for(const dir of allDirs){
             const pos = move[dir](curr.coordinate.x, curr.coordinate.y);
-            const searchFn = (x: NodePos) => x.coordinate.x == pos.x && x.coordinate.y == pos.y;
+            let distance = curr.distanceToStart + movementFn(curr.coordinate, pos);
 
-            if(isOutOfBounds(pos, map) || !map[pos.y][pos.x] || closedList.find(searchFn)){
+            if(isOutOfBounds(pos, map) || !map[pos.y][pos.x] || closedList.has(`${pos.x},${pos.y}`)){
                 continue;
             }
 
-            let neighbour = new NodePos(pos);
-            let distance = curr.distanceToStart + 1;
-            let bestScore = false;
+            let {index, element} = queue.find(x => x.coordinate.x == pos.x && x.coordinate.y == pos.y);
 
-            if(!queue.find(searchFn)){
-                bestScore = true;
-                neighbour.heuristic = weightFn(neighbour.coordinate, destination);
-                queue.add(neighbour);
-            } else if(distance < neighbour.distanceToStart){
-                bestScore = true;
-            }
+            if(!element){
+                element = new NodePos(pos, distance, heuristicFn(pos, endPos), curr);
+                queue.add(element);
+            } else if(distance < element.distanceToStart){
+                queue.removeAt(index);
 
-            if(bestScore){
-                neighbour.distanceToStart = distance;
-                neighbour.estimatedCost = neighbour.distanceToStart + neighbour.heuristic;
+                element.parent = curr;
+                element.distanceToStart = distance;
+                element.estimatedCost = element.heuristic + element.distanceToStart;
+
+                queue.add(element);
             }
         }
     }
 
-    return -1;
+    return null;
 }
 
 class PriorityQueue<T> {
@@ -375,6 +382,37 @@ class PriorityQueue<T> {
     }
 
     find(predicate: (x: T) => boolean){
-        return this.data.find(predicate);
+        let element = null;
+        const index = this.data.findIndex(predicate);
+
+        if(index >= 0){
+            element = this.data[index];
+        }
+
+        return {
+            index,
+            element
+        };
+    }
+
+    removeAt(index: number){
+        return this.data.splice(index, 1);
+    }
+}
+
+export function iterateNodes(node: NodePos, action: (node: NodePos) => void){
+    while(node){
+        action(node);
+        node = node.parent;
+    }
+}
+
+export function outputMap(map: boolean[][]){
+    for(let y = 0; y < map.length; y++){
+        let line = "";
+
+        for(let x = 0; x < map[y].length; x++){
+            line += map[y][x]
+        }
     }
 }

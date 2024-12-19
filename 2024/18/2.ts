@@ -1,4 +1,20 @@
-import { findShortestPath, getPuzzleInput, grid } from "../../utils";
+import { findShortestPath, getPuzzleInput, grid, iterateNodes } from "../../utils";
+
+function calculatePath(){
+    const endNode = findShortestPath(map, {x: 0, y: 0}, {x: TARGET_SIZE - 1, y: TARGET_SIZE - 1});
+
+    if(!endNode){
+        return null;
+    }
+
+    let path = new Set<string>();
+
+    iterateNodes(endNode, (node) => {
+        path.add(`${node.coordinate.x},${node.coordinate.y}`);
+    });
+
+    return path;
+}
 
 const TARGET_SIZE = 71; //grid goes from 0-70, so 71 total
 const NUM_TO_PROCESS = 1024;
@@ -13,15 +29,21 @@ input.slice(0, NUM_TO_PROCESS).forEach(line => {
 });
 
 let attempt = NUM_TO_PROCESS;
-while(true){
-    const minDist = findShortestPath(map, {x: 0, y: 0}, {x: TARGET_SIZE - 1, y: TARGET_SIZE - 1}); //start at top left corner and work to bottom right
-    if(minDist < 0){
-        break;
-    }
+let path = calculatePath();
 
+while(true){
     attempt++;
     const [x, y] = input[attempt].split(",").map(x => parseInt(x));
     map[y][x] = false;
+
+    if(!path.has(`${x},${y}`)){
+        continue;
+    }
+
+    path = calculatePath();
+    if(!path){
+        break;
+    }
 }
 
 console.log(attempt);
