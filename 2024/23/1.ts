@@ -1,7 +1,7 @@
 import { getPuzzleInput } from "../../utils";
 
 const input = getPuzzleInput(__dirname);
-const connections = {};
+const connections: {[key: string]: string[]} = {};
 
 for(const line of input){
     const [left, right] = line.split("-");
@@ -26,7 +26,7 @@ for(const key of Object.keys(connections)){
         for(const leftNode of connections[key]){
             for(const rightNode of connections[node]){
                 if(leftNode == rightNode){
-                    const group = [key, node, leftNode].toSorted().join(",");
+                    const group = [key, node, leftNode].toSorted((a,b) => a.localeCompare(b)).join(",");
                     groups.add(group);
                 }
             }

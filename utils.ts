@@ -1,6 +1,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 import { ILooseObject, Direction, Coordinate } from "./type";
+import "./polyfill";
 
 export function getPuzzleInput(dir: string, file = "input.txt"): string[] {
     const input = readFileSync(join(dir, file), "utf-8");
@@ -192,7 +193,7 @@ export function transposeStr(array: string[], reverse: boolean = false) {
         data.push(str);
     }
 
-    if(reverse){
+    if (reverse) {
         data.reverse();
     }
 
@@ -210,43 +211,43 @@ export function transpose<T>(array: T[][]): T[][] {
 
         data.push(inner);
     }
-    
+
     return data;
 }
 
-export function rotate<T>(array: T[][], reverse: boolean = false): T[][]{
+export function rotate<T>(array: T[][], reverse: boolean = false): T[][] {
     const data: T[][] = [];
-    
-    for(let x = array[0].length - 1; x >= 0; x--){
+
+    for (let x = array[0].length - 1; x >= 0; x--) {
         const inner = [];
 
-        for(let y = 0; y < array.length; y++){
+        for (let y = 0; y < array.length; y++) {
             inner.push(array[y][x]);
         }
 
-        if(reverse){
+        if (reverse) {
             inner.reverse();
         }
 
         data.push(inner);
     }
 
-    if(reverse){
+    if (reverse) {
         data.reverse();
     }
 
     return data;
 }
 
-export function isOutOfBounds(position: Coordinate, map: any[][] | string[]){
+export function isOutOfBounds(position: Coordinate, map: any[][] | string[]) {
     return ((position.x < 0 || position.x >= map[0].length) || (position.y < 0 || position.y >= map.length));
 }
 
 export const move: Record<Direction, (x: number, y: number, step?: number) => Coordinate> = {
-    "UP": (x, y, step = 1) => ({x, y: y - step}),
-    "DOWN": (x, y, step = 1) => ({x, y: y + step}),
-    "LEFT": (x, y, step = 1) => ({x: x - step, y}),
-    "RIGHT": (x, y, step = 1) => ({x: x + step, y})
+    "UP": (x, y, step = 1) => ({ x, y: y - step }),
+    "DOWN": (x, y, step = 1) => ({ x, y: y + step }),
+    "LEFT": (x, y, step = 1) => ({ x: x - step, y }),
+    "RIGHT": (x, y, step = 1) => ({ x: x + step, y })
 };
 
 export const mirroredMoves: Record<Direction, Direction> = {
@@ -296,7 +297,7 @@ class NodePos {
     parent: NodePos | null = null;
     direction: Direction;
 
-    constructor(coord: Coordinate, dToStart: number, score: number, parent: NodePos | null, direction: Direction){
+    constructor(coord: Coordinate, dToStart: number, score: number, parent: NodePos | null, direction: Direction) {
         this.coordinate = coord;
         this.distanceToStart = dToStart;
         this.heuristic = score;
@@ -306,36 +307,36 @@ class NodePos {
     }
 }
 
-export function manhattanDistance(curr: Coordinate, destination: Coordinate){
+export function manhattanDistance(curr: Coordinate, destination: Coordinate) {
     return Math.abs(curr.x - destination.x) + Math.abs(curr.y - destination.y)
 }
 
-export function findShortestPath(map: boolean[][], startPos: Coordinate, endPos: Coordinate, movementFn: (from: Coordinate, to: Coordinate, prevDir: Direction, currDir: Direction) => number = () => 1, heuristicFn: (currNode: Coordinate, destination: Coordinate) => number = manhattanDistance){
-    const queue = new PriorityQueue((a,b) => a.estimatedCost - b.estimatedCost, [new NodePos(startPos, 0, heuristicFn(startPos, endPos), null, "RIGHT")]);
+export function findShortestPath(map: boolean[][], startPos: Coordinate, endPos: Coordinate, movementFn: (from: Coordinate, to: Coordinate, prevDir: Direction, currDir: Direction) => number = () => 1, heuristicFn: (currNode: Coordinate, destination: Coordinate) => number = manhattanDistance) {
+    const queue = new PriorityQueue((a, b) => a.estimatedCost - b.estimatedCost, [new NodePos(startPos, 0, heuristicFn(startPos, endPos), null, "RIGHT")]);
     const closedList = new Set<string>();
 
-    while(!queue.isEmpty()){
+    while (!queue.isEmpty()) {
         const curr = queue.getNext();
         closedList.add(`${curr.coordinate.x},${curr.coordinate.y}`);
 
-        if(curr.coordinate.x == endPos.x && curr.coordinate.y == endPos.y){
+        if (curr.coordinate.x == endPos.x && curr.coordinate.y == endPos.y) {
             return curr;
         }
 
-        for(const dir of allDirs){
+        for (const dir of allDirs) {
             const pos = move[dir](curr.coordinate.x, curr.coordinate.y);
             let distance = curr.distanceToStart + movementFn(curr.coordinate, pos, curr.direction, dir);
 
-            if(isOutOfBounds(pos, map) || !map[pos.y][pos.x] || closedList.has(`${pos.x},${pos.y}`)){
+            if (isOutOfBounds(pos, map) || !map[pos.y][pos.x] || closedList.has(`${pos.x},${pos.y}`)) {
                 continue;
             }
 
-            let {index, element} = queue.find(x => x.coordinate.x == pos.x && x.coordinate.y == pos.y);
+            let { index, element } = queue.find(x => x.coordinate.x == pos.x && x.coordinate.y == pos.y);
 
-            if(!element){
+            if (!element) {
                 element = new NodePos(pos, distance, heuristicFn(pos, endPos), curr, dir);
                 queue.add(element);
-            } else if(distance < element.distanceToStart){
+            } else if (distance < element.distanceToStart) {
                 queue.removeAt(index);
 
                 element.parent = curr;
@@ -353,19 +354,19 @@ export function findShortestPath(map: boolean[][], startPos: Coordinate, endPos:
 class PriorityQueue<T> {
     private readonly data: T[] = [];
     private readonly sortFn: (a: T, b: T) => number
-    
-    constructor(sort: (a: T, b: T) => number, startingData: T[] = []){
+
+    constructor(sort: (a: T, b: T) => number, startingData: T[] = []) {
         this.sortFn = sort;
         this.data = startingData.toSorted(this.sortFn);
     }
 
-    add(newItem: T){
+    add(newItem: T) {
         let low = 0;
         let high = this.data.length;
 
-        while(low < high){
+        while (low < high) {
             const mid = Math.floor((low + high) / 2);
-            if(this.sortFn(newItem, this.data[mid]) < 0){
+            if (this.sortFn(newItem, this.data[mid]) < 0) {
                 high = mid;
             } else {
                 low = mid + 1;
@@ -383,11 +384,11 @@ class PriorityQueue<T> {
         return this.data.length == 0;
     }
 
-    find(predicate: (x: T) => boolean){
+    find(predicate: (x: T) => boolean) {
         let element = null;
         const index = this.data.findIndex(predicate);
 
-        if(index >= 0){
+        if (index >= 0) {
             element = this.data[index];
         }
 
@@ -397,23 +398,23 @@ class PriorityQueue<T> {
         };
     }
 
-    removeAt(index: number){
+    removeAt(index: number) {
         return this.data.splice(index, 1);
     }
 }
 
-export function iterateNodes(node: NodePos, action: (node: NodePos) => void){
-    while(node){
+export function iterateNodes(node: NodePos, action: (node: NodePos) => void) {
+    while (node) {
         action(node);
         node = node.parent;
     }
 }
 
-export function outputMap(map: boolean[][]){
-    for(let y = 0; y < map.length; y++){
+export function outputMap(map: boolean[][]) {
+    for (let y = 0; y < map.length; y++) {
         let line = "";
 
-        for(let x = 0; x < map[y].length; x++){
+        for (let x = 0; x < map[y].length; x++) {
             line += map[y][x] ? "." : "#";
         }
 
@@ -421,18 +422,36 @@ export function outputMap(map: boolean[][]){
     }
 }
 
-export function inputMap(lines: string[], exceptionCallback: (char: string, x: number, y: number) => boolean = (_char,_x,_y) => false){
+export function inputMap(lines: string[], exceptionCallback: (char: string, x: number, y: number) => boolean = (_char, _x, _y) => false) {
     const map = grid(lines[0].length, false, lines.length);
 
-    for(let y = 0; y < lines.length; y++){
-        for(let x = 0; x < lines[y].length; x++){
-            if(lines[y][x] == "."){
+    for (let y = 0; y < lines.length; y++) {
+        for (let x = 0; x < lines[y].length; x++) {
+            if (lines[y][x] == ".") {
                 map[y][x] = true;
-            } else if(lines[y][x] != "#"){
+            } else if (lines[y][x] != "#") {
                 map[y][x] = exceptionCallback(lines[y][x], x, y);
             }
         }
     }
 
     return map;
+}
+
+//bron-kerbosch or something
+
+export function getSubgraphs(r: Set<string>, p: Set<string>, x: Set<string>, graph: {[key: string]: Set<string>}, output: Set<string>[]){
+    if(p.size == 0 && x.size == 0){
+        output.push(r);
+        return;
+    }
+
+    for(const vertex of p){
+        const vertexSet = new Set<string>([vertex]);
+
+        getSubgraphs(r.union(vertexSet), p.intersection(graph[vertex]), x.intersection(graph[vertex]), graph, output);
+
+        p.delete(vertex);
+        x.add(vertex);
+    }
 }
