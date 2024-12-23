@@ -8,7 +8,7 @@ const movesToDirs = {
     "v": "DOWN"
 };
 
-const codes = getPuzzleInput(__dirname, "example.txt");
+const codes = getPuzzleInput(__dirname);
 
 function areCoordsEqual(p1: Coordinate, p2: Coordinate){
     return p1.x == p2.x && p1.y == p2.y;
@@ -22,7 +22,7 @@ function getPosition(keypad: (string | null)[], button: string) {
     return { x, y };
 }
 
-function getMovesTo(startPos: Coordinate, { x, y }: Coordinate, toAvoid: Coordinate) {
+function getMovesTo(startPos: Coordinate, { x, y }: Coordinate, toAvoid: Coordinate, prevMove = null) {
     let directions: string[] = [];
     const currPos = {...startPos};
 
@@ -48,7 +48,7 @@ function getMovesTo(startPos: Coordinate, { x, y }: Coordinate, toAvoid: Coordin
         }
     }
 
-    directions = tryToFixDirections(directions, startPos, toAvoid);
+    directions = tryToFixDirections(directions, startPos, toAvoid, prevMove);
 
     startPos.x = x;
     startPos.y = y;
@@ -56,18 +56,29 @@ function getMovesTo(startPos: Coordinate, { x, y }: Coordinate, toAvoid: Coordin
     return directions;
 }
 
-function tryToFixDirections(directions: string[], startPos: Coordinate, toAvoid: Coordinate){
+function tryToFixDirections(directions: string[], startPos: Coordinate, toAvoid: Coordinate, prevMove: string | null){
     const hDirs = ['<', '>'];
     const yDirs = ['^', 'v'];
 
+
+    //left is furthest from A (v<<)
+    //then down (v<)
+    //up (<) and right (v) are equidistant
+    const weights = {
+        "<": 3,
+        "v": 2,
+        "^": 1,
+        ">": 1
+    };
+
     if(directions.some(x => hDirs.includes(x)) && directions.some(y => yDirs.includes(y))){
         //we're moving horizontally AND vertically, so there must be some combination that avoids the null square!
-        const targetDirs = directions.toSorted();     
+        const targetDirs = directions.toSorted((a, b) => a == prevMove ? 1 : weights[b] - weights[a]);     
         if(doMovesStillWork(targetDirs, {...startPos}, toAvoid)){
             return targetDirs
         }
         
-        targetDirs.reverse();
+        targetDirs.sort((a, b) => a == prevMove ? 1 : weights[a] - weights[b])
         if(doMovesStillWork(targetDirs, {...startPos}, toAvoid)){
             return targetDirs
         }
@@ -106,7 +117,8 @@ let thirdBot: Coordinate = { x: 2, y: 0 };
 let total = 0;
 
 for (const code of codes) {
-
+    console.log(code);
+    
     const directions: string[] = [];
     let numStr = "";
 
@@ -125,22 +137,26 @@ for (const code of codes) {
     console.log(directions);
 
     const actualDirections: string[] = [];
+    let prevDir = null;
 
     for (const dir of directions) {
         const target = getPosition(dirKeypad, dir);
 
-        actualDirections.push(...getMovesTo(dirBot, target, dirGap));
+        actualDirections.push(...getMovesTo(dirBot, target, dirGap, prevDir));
+        prevDir = actualDirections[actualDirections.length - 1];
         actualDirections.push("A");
     }
 
     console.log(actualDirections);
 
     const myDirections: string[] = [];
+    prevDir = null;
 
     for (const dir of actualDirections) {
         const target = getPosition(dirKeypad, dir);
 
-        myDirections.push(...getMovesTo(thirdBot, target, dirGap));
+        myDirections.push(...getMovesTo(thirdBot, target, dirGap, prevDir));
+        prevDir = myDirections[myDirections.length - 1];
         myDirections.push("A");
     }
 
