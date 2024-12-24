@@ -6,34 +6,52 @@ const operations = {
     "XOR": (a: number, b: number) => (a != b) ? 1 : 0
 }
 
-const values: {[key: string]: number} = {};
+const values: { [key: string]: number } = {};
 const wireRegex = /(.*) (AND|OR|XOR) (.*) -> (.*)/
 
-const input = getPuzzleInput(__dirname, "example.txt");
+const input = getPuzzleInput(__dirname, "example-2.txt");
 let settingValues = true;
-const output = {};
+const toProcess = [];
 
-for(const line of input){
-    if(line.trim() == ""){
+for (const line of input) {
+    if (line.trim() == "") {
         settingValues = false;
         continue;
     }
 
-    if(settingValues){
+    if (settingValues) {
         const [wire, value] = line.split(": ");
         values[wire] = parseInt(value);
     } else {
         const parts = wireRegex.exec(line);
-        
-        output[parts[4]] = operations[parts[2]](values[parts[1]], values[parts[3]]);
+
+        const [left, right] = [values[parts[1]], values[parts[3]]];
+
+        if (left == undefined || right == undefined) {
+            toProcess.push(parts);
+        } else {
+            values[parts[4]] = operations[parts[2]](left, right);
+        }
+
     }
 }
 
-const keys = Object.keys(output).filter(k => k.startsWith("z")).toSorted((a, b) => a.localeCompare(b));
+while (toProcess.length > 0) {
+    const parts = toProcess.shift();
+    const [left, right] = [values[parts[1]], values[parts[3]]];
+
+    if (left == undefined || right == undefined) {
+        toProcess.push(parts);
+    } else {
+        values[parts[4]] = operations[parts[2]](left, right);
+    }
+}
+
+const keys = Object.keys(values).filter(k => k.startsWith("z")).toSorted((a, b) => a.localeCompare(b));
 let total = 0;
 
-for(let i = 0; i < keys.length; i++){
-    if(output[keys[i]] == 1){
+for (let i = 0; i < keys.length; i++) {
+    if (values[keys[i]] == 1) {
         total += Math.pow(2, i);
     }
 }
